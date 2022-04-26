@@ -1,0 +1,20 @@
+# LATEX
+*.aux
+*.idx
+*.log
+*.fls
+*.toc
+*.acn
+*.acr
+*.mtc
+*.out
+*.fdb_latexmk
+*.synctex.gz
+
+# LATEX (BEAMER)
+*.nav
+*.snm
+
+# PDF PRODUCTS
+presentation/presentation.pdf
+report/report.pdf
