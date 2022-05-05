@@ -5,7 +5,23 @@
 \documentclass{report}
 
 \usepackage{geometry}   % Edit document margins
+\usepackage{hyperref}   % Table of contents hyperlinks
+\usepackage{parskip}    % Paragraph indent & skip
 \usepackage{graphicx}   % 'graphics' package interface
+
+% HELPER PACKAGES (REMOVE IN FINAL) %
+\usepackage{todonotes}
+\usepackage{blindtext}
+% HELPER PACKAGES (REMOVE IN FINAL) %
+
+% Hyperlink setup
+\hypersetup{   
+    colorlinks,
+    citecolor = blue,
+    filecolor = blue,
+    linkcolor = blue,
+    urlcolor = blue
+}
 
 %----------------------------------------------------------------------------------------
 %	DOCUMENT
@@ -15,5 +31,42 @@
 
 % TITLE
 \include{title}
+
+% ToC
+{
+    \hypersetup{hidelinks}
+    \tableofcontents
+}
+
+% LIST OF TODOS (REMOVE IN FINAL) %
+\listoftodos
+% LIST OF TODOS (REMOVE IN FINAL) %
+
+% INTRODUCTION
+\input{./chapters/1.introduction}
+
+% ENVIRONMENT MODELING
+\input{chapters/2.environment}
+
+% OPTIMIZATION ALGORITHM
+\input{chapters/3.optimization}
+
+% OPTIMIZATION WITH UNCERTAIN ALPHA FUNCTIONS
+\input{chapters/4.uncertain_alpha}
+
+% OPTIMIZATION WITH UNCERTAIN NUMBER OF SOLD ITEMS
+\input{chapters/5.uncertain_items}
+
+% OPTIMIZATION WITH UNCERTAIN GRAPH WEIGHTS
+\input{chapters/6.uncertain_weights}
+
+% OPTIMIZATION WITH NON-STATIONARY DEMAND CURVE
+\input{chapters/7.non_stationary_demand}
+
+% CONTEXT GENERATION
+\input{chapters/8.context_generation}
+
+% CONCLUSIONS
+\input{chapters/9.conclusions}
 
 \end{document}

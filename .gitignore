@@ -4,6 +4,7 @@
 *.log
 *.fls
 *.toc
+*.tdo
 *.acn
 *.acr
 *.mtc
@@ -16,5 +17,8 @@
 *.snm
 
 # PDF PRODUCTS
-presentation/presentation.pdf
-report/report.pdf
+presentation.pdf
+report.pdf
+
+# AUXILIARY FOLDER
+aux/*
