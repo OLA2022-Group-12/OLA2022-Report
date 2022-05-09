@@ -1,2 +1,36 @@
 \chapter{Introduction}
 \label{chap:introduction}
+
+This project was made for the \texttt{Online Learning Applications} class at \textbf{Politecnico di Milano} with the supervision of prof. Nicola Gatti during a.a. 2021-2022; the project features a common part to all the project proposals, which is related to \textit{social influencing}, and a proposal-specific argument that, in our case, is \textit{advertising}. 
+
+\section{Overview}
+\label{sec:overview}
+
+The project should model an e-commerce website capable of offering to its customers 5 different possible products labeled as $P_i$ having $i \in (1,\,2,\,3,\,4,\,5)$.
+
+Products are displayed inside web pages; a web page may have a \textit{primary product} (which can be bought directly) and two \textit{secondary products} organized as recommendations where the first \textit{secondary product} has higher priority than the second one, moreover, the price for \textit{secondary products} isn't shown but they have the capability of bringing the customer on their respective primary web page upon being clicked.
+
+Every day, customers can land on the primary pages of the various products or on the web page of a competitor. 
+
+The website is in need of advertising its own products and has a predetermined \textit{budget} to spend in order to boost the probability of possible customers landing on a page owned by the website. 
+
+\section{Hypoteses}
+\label{sec_hypoteses}
+
+This section holds all of the general hypoteses that were given or were independently formulated in order to create a feasible and focused project.
+
+This does not include specific hypoteses and assumptions that are strictly related to the computational or numerical side of the project, as they will be discussed in their respective chapters.
+
+\begin{itemize}
+    \item The customer effectively buys products only at the end of their visit to the website.
+    \item A user buys an arbitrary amount of products of a certain type if the price of a single unit of product is strictly under their \textit{reservation price}.
+    \item The website offers an infinite number of units for each product and a can customer buy an arbitrary number of them.
+    \item A single user won't open two times the same web page containing the same product during a visit to the website.
+    \item All of the actions performed by the users are perfectly observable by the e-commerce website.
+    \item Every \textit{primary product} has a \textbf{fixed} pair of \textit{secondary products} that will be displayed in the modalities discussed above.
+    \item The price of every product is \textbf{fixed} and equal to the margin.
+    \item There is an \textit{advertising campaign} for each product (5 in total), and clicking on an ad brings the user to the web page containing the advertised \textit{primary product}.
+    \item \textit{Bidding optimization} is outside the scope of the project.
+\end{itemize}
+
+\todo{add our additional hypoteses}
