@@ -9,6 +9,20 @@
 \usepackage{parskip}    % Paragraph indent & skip
 \usepackage{graphicx}   % 'graphics' package interface
 
+\usepackage{csquotes}   % recommended for biblatex
+\usepackage[
+    backend=biber,
+    style=ieee,
+    maxbibnames=99,
+    minbibnames=3,
+    maxcitenames=2,
+    mincitenames=1,
+    citestyle=numeric-comp,
+    sorting=none,
+    dashed=false
+]{biblatex}             % for bibliography
+
+
 % HELPER PACKAGES (REMOVE IN FINAL) %
 \usepackage{todonotes}
 \usepackage{blindtext}
@@ -22,6 +36,9 @@
     linkcolor = blue,
     urlcolor = blue
 }
+
+% Setup bibliography
+\addbibresource{report.bib}
 
 %----------------------------------------------------------------------------------------
 %	DOCUMENT
@@ -68,5 +85,8 @@
 
 % CONCLUSIONS
 \input{chapters/9.conclusions}
+
+% Print table of biblography references
+\printbibliography
 
 \end{document}
