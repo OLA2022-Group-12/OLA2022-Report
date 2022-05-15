@@ -1,66 +1,58 @@
 
 
 \chapter{Environment modeling}
-\label{chap:env_model}
 
-\section{Hypoteses}
-\label{sec_hypoteses}
+\section{Overview}
+\label{chap:env_model}
+The environment is coded as a constant base upon we build the entire project. This choice has been derived by two main reason. \textit{The first one} is that the environment doesn't change nature in each different step thus behaving always in the same way. \textit{The second one} is to better compare the result of different situation without introducing a bias in the inputs we feed the algorithm.
+
+What will be changing would be how many data the Learner will be given as input and they will be specified in each specific section of the document.
+
+\section{Hypotheses}
+ \label{sec:env_hypoteses}
 
 In this section the specific assumptions related to the environment modelling are listed.
 
 \begin{itemize}
-    \item Each costumer is characterized by 2 binary features defining 3 different users' class.
-    
-    \item The probability with each class can enter the website are fixed and known.
-    
-    \item Each users' class is distinguishable by an unique $alpha_i$-function expressing the ratio of users landing on the web-page where product $P_i$ is shown as              primary one.
-    
-    \item The competitor budget is assumed to be constant as a not \textit{strategic player}.
-    
-    \item Products' prize are known and constant over time.
-    
-    \item Costumers' \textit{reservation price} are fixed and known.
+    \item Each costumer is characterized by 2 binary features for instance: occupation (student/worker) and gender (female/male) that define 3 different user classes we want to target in our advertisement campaign.
+    \item The probability with each class can enter the website are fixed and known. It can be seen as the percentage over the population we are focusing with our ads.
+    \item Each user class is distinguishable by an $alpha_i$ function expressing the ratio of users landing on the web-page where product $P_i$ is shown as primary one. More clearly, given a campaign every class is characterized by a different profile of $alpha$ functions.
+    \item The competitor's budget is assumed to be constant assuming a \textit{non-strategic player}.
  \end{itemize}
 
 \section{Model Choice}
-\label{sec_Motivation}
- \todo{add our motivating application and reason on why we choose prob distribution for each variable.}
+\label{sec:env_Motivation}
+We chose to model the $alpha$ functions as sigmoind since they are constrained by a pair of horizontal asymptotes as $ x\to\pm\infty$  and this characteristic well fit the hypothesis that the maximum expected value of $alpha$ correspond to the case in which the budget allocated on that campaign is infinite. Moreover having three different parameter to attune: steepness, shift, and upper bound  gives us the possibility to better differentiate each user class.
+\todo{add our motivating application and reason on why we choose prob distribution for each variable and write it better, just trying latex also default ones}
 
 \section{Code Analysis}
-\label{sec_Code Analysis}
+\label{sec:env_Code Analysis}
 
-The environment is composed by different functions which model the user interaction on the web-page and how users react given a different budget.
+The environment is composed by different objects and functions which model the users' interactions on the web-page, how users react given a different budget and .
  
  \begin{enumerate}
-     \item  $\alpha$-function. \\
-            
-            they are thought as sigmoidal function upon receiving a \textit{Budget} and \textit{the characterizing parameters} of the function return the expected         
-            value of clicks for the specific class' function.
-    
-    \item Generation of a graph.\\
-    
-            throughout the function $\textit{populate graph}$ we create a graph with no auto-loops that can be fully connected or not depending on the boolean value               
-            given as input.
-    
-    \item Modelling user interaction.\\
-            
-            throughout the function $\textit{get interaction}$ given a class of user and a  \textit{Primary Product} it returns the number of each product bought at               
-            the end of the visit of the web-page.
-    
-    \item Navigating the web-page.\\
-    
-            The function \textit{Go to page} given the class of user show it the page of the specified
-            
-            primary products and, after the user buys the product within the costrains of \textit{Reservation Prize} and \textit{massimo numero} two secondary products             
-            are shown. Clicking on them shows the user another page where the clicked product is primary.
+     \item  Enviroment data
      
-    \item Overall result of a day
+     This data class contain all environment values.It is obtained passing by a random generation of the parameters, which are the only ones not know by hypothesis. The known parameters are set up by the data class constructor, with default values as shown in the section \textbf{Model Choice}. After constructing this class, it can be passed to the function  \textit{get day of interactions}. If needed to be set up with different values, such as an incomplete graph, it can simply be specified when the class is constructed.
+    
+     \item  $\alpha$ functions.
+     
+     Computes the expected value of clicks given a certain budget for a specific function. As other parameters it need the steepness, the shift and maximum value that characterized the curve. Notably the maximum value represents the maximum expected number of clicks possible.
   
-          \textit{get day of interactions} gives us the interactions of a whole day and generate new updated paramaters from recalling all the previous functions for             
-          each user class.
-      
-      
+    \item Generation of a graph.
+    
+    This function generate by default a 5x5 fully connected graph without any auto-loops. It takes as input the number of nodes with a Boolean value witch decide if it need to be fully connected or not. In the last case is needed also another integer representing the probability to not have two nodes connecting. It returns a square matrix representing every weight between any nodes.
+   
+    \item Modelling user interaction.
+    
+    With the aid of the function \textit{get interaction} we can compute a single interaction and return the results. Taking as input the user class, the primary product's web page, list in witch is included also the competitor one, and the environment data the function returns, the action taken in that specific scenario. More precisely it provides us the number of each item bought by the user belonging to the given class.
+    
+    This is possible Throughout the function \textit{Go to page} where is modelled the user-web page interaction. Infact given a user and his class together with the Enviroment Data it brings the user to a primary product and if bought behaves as expleined in section \textbf{Introduction}.
+    
+    \item Overall result of a day
+    
+    \textit{get day of interactions} gives us the interactions of a whole day and generates new updated parameters given a specific budget for each product as input. It needs also the \textit{Environment Data} and the total number of visitors of the e-commerce for that day.
+    
 \end{enumerate}
 
-\end{document}
- 
+
