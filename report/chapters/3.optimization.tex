@@ -3,31 +3,32 @@
 
 \section{Problem Formulation}
 \label{sec:Opt_Problem Formulation}
-Our problem, since the bidding part is out of the focus of the project is reduced to find the optimal budget per campaign in order to maximize the profit.
+Our problem, since the bidding part is out of the focus of the project, is reduced to finding the optimal budget per campaign in order to maximize the profit.
 The profit is defined as the difference between the (expected margin) and the spent in advertising and it is given by the number of each product bought and (his price); since in the project's assumption the price is equal to the margin.
-The number of click is represented by $\alpha_i$ witch are influenced by how much of the budget we invest on that particular sub campaign.
+The number of clicks is represented by $\alpha_i$ which are influenced by how much of the budget we invest on that particular subcampaign.
 Basically, it is a maximisation subject to the obvious constraint: the sum of the daily budget can't be greater then the overall budget.
 
 \todo{clarify why price and not expected return of product,Moreover we decided to not put any lower and upper bound on subcampaign to better explore all possibilities?}
 
-The optimization problem can be expressed as follow:
+The optimization problem can be expressed as follows:
 \begin{displaymath}
-F=\max_\substack{x_i\in B} \sum_{i=0}^n \alpha_i(x_i)p_i-x_i \ s.t. \sum_{i=0}^n x_i\leq B  
+F=\max_{\substack{x_i\in B}} \sum_{i=0}^n \alpha_i(x_i)p_i-x_i \ s.t. \sum_{i=0}^n x_i\leq B  
 \end{displaymath}
 \todo{how to nicely space formulas?}
 
-Where: \begin{itemize}
+Where: 
+\begin{itemize}
     \item F represents the profit defined as the difference between the expected margin and the spent in advertising.
     \item $\alpha_i$ are the value per click set equal to the expected margin from landing to the corresponding product.
     \item B is the total budget usable.
     \item $x_i$ are the money spent on the sub campaign ads for each product $P_i$.
-        \end{itemize}
+\end{itemize}
 
-At start we can use a dynamic-programming algorithm to optimize this function considering all the parameters are known
-\todo{and neglecting that the budget spent is to subtract from the objective function}. Furthermore, in the dynamic-programming algorithm, we can find the best way to spend the budget, for every feasible value of the budget. 
+At start we can use a dynamic-programming algorithm to optimize this function considering that all the parameters are known.
+\todo{and neglecting that the budget spent is to subtract from the objective function} Furthermore, in the dynamic-programming algorithm, we can find the best way to spend the budget, for every feasible value of the budget. 
 \todo{This can give us a clairvoyant result with witch we can compare other more realistic algorithm.?}
 
 \section{Code Analysis}
 \label{sec:Opt_Code Analysis}
 
-By the aid of the function \textit{budget assignment} we solve the budget assignment problem over the value matrix representing our optimization problem. The matrix is assumed to be divided into N rows and M columns. In the rows we have the sub campaigns, in the columns we have the values of the daily budget described by fractions from 0 to B, where B is the max budget. The function consider that the sum of the returned allocations can not exceed the previous column. The value in each cell is the reward of assigning budget j to campaign i and return a vector where row i has the index of selected column j of C.
+By the aid of the function \textit{budget assignment} we solve the budget assignment problem over the value matrix representing our optimization problem. The matrix is assumed to be divided into N rows and M columns. In the rows we have the sub campaigns, in the columns we have the values of the daily budget described by fractions from 0 to B, where B is the max budget. The function considers that the sum of the returned allocations can not exceed the previous column. The value in each cell is the reward of assigning budget j to campaign i and return a vector where row i has the index of selected column j of C.
