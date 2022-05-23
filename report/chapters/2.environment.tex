@@ -1,7 +1,8 @@
 \chapter{Environment modeling}
 
 \section{Overview}
-\label{chap:env_model}
+\label{chap:env_overview}
+
 The environment is coded as a constant base upon which we build the entire project. This choice has been derived from two main reasons. \textit{The first one} is that the environment's nature doesn't change in each different step thus behaving always in the same way. \textit{The second one} is to better compare the results of different situations without introducing a bias in the inputs we feed the algorithm.
 
 What will be changing is how much data the Learner will be given as input, this will be specified in each specific section of the document.
@@ -52,5 +53,3 @@ The environment is composed by different objects and functions which model the u
     \textit{get day of interactions} gives us the interactions of a whole day and generates new updated parameters given a specific budget for each product as input. It also needs the \textit{Environment Data} and the total number of visitors of the e-commerce for that day.
     
 \end{enumerate}
-
-
