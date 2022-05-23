@@ -1,2 +1,18 @@
 \chapter{Optimization algorithm}
 \label{chap:opt_alg}
+
+
+
+\section{Solving the Budget Assignment Algorithm}
+\label{sec:budget_assignment_algorithm}
+
+As a part of the optimization problem we utilize a dynamic programming algorithm to solve a discretized budget assignment problem. Assigning the budget in the most profitable way is similar to solving the multidimensional knapsack problem.
+
+By first creating a matrix over the value of assigning a certain budget to a given sub-campaign. The rows of the matrix correspond to the different sub-campaigns and the columns corresponding to the different budget levels. For the algorithm to work, it is important that the columns are separated by a constant step size. As a simplification we have in our case then determined that column $j$ signifies a budget of $j * (B / M)$, where $B$ is the total budget and $M$ is the amount of columns. Put simply, the columns represent a budget fraction of the total budget.
+
+Given this matrix, the algorithm will then find the best allocation of the budget to maximize the total value. By iterating over the rows of the matrix, and in essence taking more and more sub-campaigns into consideration, two new tables are created which store both the highest value so far and the needed allocation to achieve that value. E.g. when calculating the value for budget fraction $\frac{1}{2}$ when only the first sub-campaign is considered, the full amount of the current fraction would always be assigned to current, and only, campaign. However when the second campaign is introduced, all possible combinations of assignments between the two are considered. In that case there might be that allocating $0$ to the first and $\frac{1}{2}$ to the second gives the highest value. Then the value of this allocation is stored in the dynamic table at the second row and column of the budget fraction $\frac{1}{2}$. Lastly the second table is populated with the index of the allocation made, so in this case the index of the chosen budget fraction.
+
+After constructing the two dynamic tables above, the last rows then consist of the situation in which all sub-campaigns are considered, hence by choosing the biggest value in this row, the best budget assignment for the entire problem is found. Using the table with the allocation indices the amount of the budget for the given campaign is stored, and the remaining budget is updated. I.e. if allocated half of the budget for the last campaign, we want to best distribute the remaining half of the budget to the other sub-campaigns.
+
+\todo{Should we include the actual code too as a listing here?}
+\todo{Should there be a visual explanation aswell (it's hard to explain in text tbh)?}
