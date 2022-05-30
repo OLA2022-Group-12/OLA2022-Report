@@ -48,7 +48,7 @@ The environment is composed by different objects and functions which model the u
     \item Modelling user interaction.
     
     With the aid of the function \textit{get interaction} we can compute a single interaction and return the results. Taking as input the user class, the primary product's web page, a list in which it is also included also the competitor and the environment data the function returns the action taken in that specific scenario. More precisely it provides us the number of each item bought by the user belonging to the given class.
-    This is possible throughout the function \textit{Go to page} where models the interaction between user and web-page; in fact, given a user and his class together with the Environment Data, it brings the user to a primary product and, if bought, behaves as explained in section \hypertref[sec:intro_overview]{Overview}.
+    This is possible throughout the function \textit{Go to page} where models the interaction between user and web-page; in fact, given a user and his class together with the Environment Data, it brings the user to a primary product and, if bought, behaves as explained in section \hyperref[sec:intro_overview]{Overview}.
     
     \item Overall result of a day
     
@@ -58,7 +58,8 @@ The environment is composed by different objects and functions which model the u
      The simulator is the bridge between environmant and the different learner. It mainly use function already definded in enviroment to compute the rewards adjusting the parameters as the learner improves.
      \begin{enumerate}
      \item Computation of the rewards
-     With the aid of the function \textit{get reward from interactions} we computes the margin made each day, for each of the 3 classes of users and the aggregated margin. This is made possible by accessing and adding the interaction from the Environment.
+     
+     With the aid of the function \textit{get reward from interactions} we computes the margin made each day, for each of the 3 classes of users and the aggregated margin. This is made possible by accessing and adding the single interactions from the Environment.
      
      \item Simulation
      
