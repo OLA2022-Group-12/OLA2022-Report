@@ -4,9 +4,8 @@
 \label{chap:env_overview}
 
 The environment is coded as a constant base upon which we build the entire project. This choice has been derived from two main reasons. \textit{The first one} is that the environment's nature doesn't change in each different step thus behaving always in the same way. \textit{The second one} is to better compare the results of different situations without introducing a bias in the inputs we feed the algorithm.
-
-What will be changing is how much data the Learner will be given as input, this will be specified in each specific section of the document.
-
+In order to better simulate the real case and to maintain consistency to easier confront the efficiency of the different learners, the environment contains all the required functions and data needed to the simulator to compute the outcome of every day given the initial parameters. The simulator returns the results to the specific learner which, after adjusting the parameters to obtain the maximum reward will pass back the new initial data.
+What will be changing is how much data the Learner will be given as input throughout the simulator;as matter of fact the environment is \textit{"masked"} so it will pass only the data needed for each step. The data known and the one unknown will be specified for each chapter of the project.
 \section{Hypotheses}
  \label{sec:env_hypoteses}
 
@@ -26,13 +25,17 @@ We chose to model the $alpha$ functions as sigmoid functions since they are cons
 
 \section{Code Analysis}
 \label{sec:env_Code Analysis}
-
+ \subsection{Enviroment}
 The environment is composed by different objects and functions which model the users' interactions on the web-page, how users react given different budgets and it returns the final result of a day of interactions.
  
  \begin{enumerate}
      \item Enviroment data
      
      This data class contains all the environment's values. It is obtained passing by a random generation of the parameters, which are the only ones not know by hypothesis. The known parameters are set up by the data class constructor with default values as shown in the section \textbf{Model Choice}. After constructing this class, it can be passed to the function  \textit{get day of interactions}. If it needs to be set up with different values, such as an incomplete graph, it can simply be specified when the class is constructed.
+     
+     \item  Masked Environment Data
+     
+     This data class contains environment values which are not to estimate for the current learning step; it is obtained by the fucntion \textit{create masked environment} 
     
      \item $\alpha$ functions.
      
@@ -45,11 +48,18 @@ The environment is composed by different objects and functions which model the u
     \item Modelling user interaction.
     
     With the aid of the function \textit{get interaction} we can compute a single interaction and return the results. Taking as input the user class, the primary product's web page, a list in which it is also included also the competitor and the environment data the function returns the action taken in that specific scenario. More precisely it provides us the number of each item bought by the user belonging to the given class.
-    
-    This is possible throughout the function \textit{Go to page} where models the interaction between user and web-page; in fact, given a user and his class together with the Enviroment Data, it brings the user to a primary product and, if bought, behaves as expleined in section \hyperref[sec:intro_overview]{Overview}.
+    This is possible throughout the function \textit{Go to page} where models the interaction between user and web-page; in fact, given a user and his class together with the Environment Data, it brings the user to a primary product and, if bought, behaves as explained in section \hypertref[sec:intro_overview]{Overview}.
     
     \item Overall result of a day
     
     \textit{get day of interactions} gives us the interactions of a whole day and generates new updated parameters given a specific budget for each product as input. It also needs the \textit{Environment Data} and the total number of visitors of the e-commerce for that day.
-    
-\end{enumerate}
+    \end{enumerate}
+     \subsection{Simulator}
+     The simulator is the bridge between environmant and the different learner. It mainly use function already definded in enviroment to compute the rewards adjusting the parameters as the learner improves.
+     \begin{enumerate}
+     \item Computation of the rewards
+     With the aid of the function \textit{get reward from interactions} we computes the margin made each day, for each of the 3 classes of users and the aggregated margin. This is made possible by accessing and adding the interaction from the Environment.
+     
+     \item Simulation
+     
+     This function, given the appropriate \textit{"masked"} environment to pass to the learner, runs the simulation for a certain number of experiments consisting of a defined amount of days to have statistically more accurate results. By default, the value is set to 1 because in the real world condition we can't expect to have enough time or money to run the same experiment several times. It is possible to set the number of days the simulation takes place.It returns the collected rewards of running each experiment.
