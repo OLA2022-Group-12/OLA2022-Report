@@ -3,12 +3,12 @@
 \section{Overview}
 \label{chap:env_overview}
 
-The environment is coded as a constant base upon which we build the entire project. This choice has been derived from two main reasons. \textit{The first one} is that the environment's nature doesn't change in each different step thus behaving always in the same way. \textit{The second one} is to better compare the results of different situations without introducing a bias in the inputs we feed the algorithm.
-
-What will be changing is how much data the Learner will be given as input, this will be specified in each specific section of the document.
+The environment is coded as a constant base upon which we build the entire project. This choice has been derived from two main reasons. \textit{The first one} is that the environment's nature doesn't change in each different step, thus it behaves always in the same way. \textit{The second one} is to better compare the results of different situations without introducing a bias in the inputs we feed the algorithm.
+In order to better simulate a real case scenario and to maintain consistency between the different learners, the environment contains all the required functions and data needed by the simulator to compute the outcome of every day given the initial parameters. The simulator returns the results to the specific learner which, after adjusting the parameters maximizing the reward, will pass back the new initial data.
+What will be changing is how much data the Learner will be given as input throughout the simulator; as a matter of fact, from the learners' perspective, the environment is \textit{"masked"} and it will pass only the known data for each step (different for each point of the project).
 
 \section{Hypotheses}
- \label{sec:env_hypoteses}
+\label{sec:env_hypoteses}
 
 In this section the specific assumptions related to the environment modelling are listed.
 
@@ -17,39 +17,55 @@ In this section the specific assumptions related to the environment modelling ar
     \item The probability for each class to be able to enter the website is fixed and known. It can be seen as the percentage over the population we are focusing with our ads.
     \item Each user class is distinguishable by an $alpha_i$ function expressing the ratio of users landing on the web-page where product $P_i$ is shown as the primary one. More clearly, given a campaign every class is characterized by a different profile of $alpha$ functions.
     \item The competitor's budget is assumed to be constant assuming a \textit{non-strategic player}.
- \end{itemize}
+\end{itemize}
 
 \section{Model Choice}
 \label{sec:env_Motivation}
+
 We chose to model the $alpha$ functions as sigmoid functions since they are constrained by a pair of horizontal asymptotes as $ x\to\pm\infty$  and this characteristic fit well the hypothesis that the maximum expected value of $alpha$ correspond to the case in which the budget allocated on that campaign is infinite. Moreover having three different parameters to attune (steepness, shift, and upper bound) gives us the possibility to better differentiate each user class.
 \todo{add our motivating application and reason on why we choose prob distribution for each variable and write it better, just trying latex also default ones}
 
 \section{Code Analysis}
 \label{sec:env_Code Analysis}
 
-The environment is composed by different objects and functions which model the users' interactions on the web-page, how users react given different budgets and it returns the final result of a day of interactions.
+    \subsection{Enviroment}
+    The environment is composed by different objects and functions which model the users' interactions on the web-page, how users react given different budgets and it returns the final result of a day of interactions.
  
- \begin{enumerate}
-     \item Enviroment data
+        \begin{enumerate}
+            \item Enviroment data
      
-     This data class contains all the environment's values. It is obtained passing by a random generation of the parameters, which are the only ones not know by hypothesis. The known parameters are set up by the data class constructor with default values as shown in the section \textbf{Model Choice}. After constructing this class, it can be passed to the function  \textit{get day of interactions}. If it needs to be set up with different values, such as an incomplete graph, it can simply be specified when the class is constructed.
+                This data class contains all the environment's values. It is obtained passing by a random generation of the parameters, which are the only ones not know by hypothesis. The known parameters are set up by the data class constructor with default values as shown in the section \textbf{Model Choice}. After constructing this class, it can be passed to the function  \textit{get day of interactions}. If it needs to be set up with different values, such as an incomplete graph, it can simply be specified when the class is constructed.
+     
+            \item Masked Environment Data
+     
+                This data class only contains the environment values which are relevant and known at the current step; it is obtained by the fucntion \textit{create masked environment} 
     
-     \item $\alpha$ functions.
+            \item $\alpha$ functions.
      
-     Computes the expected value of clicks given a certain budget for a specific function. As other parameters it needs the steepness, the shift and maximum value that characterizes the curve. Notably, the maximum value represents the maximum expected number of clicks possible.
+                Computes the expected value of clicks given a certain budget for a specific function. As other parameters it needs the steepness, the shift and maximum value that characterizes the curve. Notably, the maximum value represents the maximum expected number of clicks possible.
   
-    \item Generation of a graph.
+            \item Generation of a graph.
     
-    This function generates by default a 5x5 fully connected graph without any auto-loops. It takes as input the number of nodes with a Boolean value which decides if it needs to be fully connected or not. In the last case it is also needed another integer representing the probability to not have two nodes connecting. It returns a square matrix representing every weight between any nodes.
+                This function generates by default a 5x5 fully connected graph without any auto-loops. It takes as input the number of nodes with a Boolean value which decides if it needs to be fully connected or not. In the last case it is also needed another integer representing the probability to not have two nodes connecting. It returns a square matrix representing every weight between any nodes.
    
-    \item Modelling user interaction.
+            \item Modelling user interaction.
     
-    With the aid of the function \textit{get interaction} we can compute a single interaction and return the results. Taking as input the user class, the primary product's web page, a list in which it is also included also the competitor and the environment data the function returns the action taken in that specific scenario. More precisely it provides us the number of each item bought by the user belonging to the given class.
+                With the aid of the function \textit{get interaction} we can compute a single interaction and return the results. Taking as input the user class, the primary product's web page and a list in which it is also included also the competitor and the environment data; the function returns the action taken in that specific scenario, more precisely, it provides us the number of each item bought by the user belonging to the given class. This is made possible by the function \textit{Go to page} which models the interaction between user and web-page; in fact, given a user and their class, together with the Environment Data, it brings the user to a primary product and, if bought, behaves as explained in section \hyperref[sec:intro_overview]{Overview}.
     
-    This is possible throughout the function \textit{Go to page} where models the interaction between user and web-page; in fact, given a user and his class together with the Enviroment Data, it brings the user to a primary product and, if bought, behaves as expleined in section \hyperref[sec:intro_overview]{Overview}.
+            \item Overall result of a day
     
-    \item Overall result of a day
+                \textit{get day of interactions} gives us the interactions of a whole day and generates new updated parameters given a specific budget for each product as input. It also needs the \textit{Environment Data} and the total number of visitors of the e-commerce for that day.
+        \end{enumerate}
+
+    \subsection{Simulator}
+    The simulator is the bridge between the environment and the learner. It mainly uses functions already definded in the environment to compute the rewards and to adjust the parameters as the learner improves.
     
-    \textit{get day of interactions} gives us the interactions of a whole day and generates new updated parameters given a specific budget for each product as input. It also needs the \textit{Environment Data} and the total number of visitors of the e-commerce for that day.
-    
-\end{enumerate}
+        \begin{enumerate}
+            \item Computation of the rewards
+     
+                With the aid of the function \textit{get reward from interactions} we compute the aggregated margin and the margin for each of the 3 classes of users. This is made possible by accessing and adding the single interactions from the Environment.
+     
+            \item Simulation
+     
+                This function, given the appropriate \textit{"masked"} environment, runs the simulation for a certain number of experiments in order to have results that are statistically relevant, each experiment simulates a tunable amount of days. By default, the number of experiments is set to 1 because in a real world situation we can't expect to have enough time or money to run the same experiment several times. The function returns the collected rewards for each experiment.
+        \end{enumerate}
