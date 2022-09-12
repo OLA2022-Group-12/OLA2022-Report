@@ -15,4 +15,45 @@
 % TITLE
 \frame{\titlepage}
 
+% Introduction
+
+\begin{frame}
+    \frametitle{Table of Contents}
+    \begin{list}{*}{\setlength{\itemsep}{1cm}}
+        \item<1-> Enviroment 
+        \item<2-> Learners
+        \item<3-> Algorithms
+        \item<4-> Results
+    \end{list}
+    
+\end{frame}
+
+
+\begin {frame}
+\frametitle{Enviroment }
+In our framework the enviroment is generating the complete class of data which are fed to the learners after being properly masked
+So the enviroment gives us a constant base on which we build the entire project. This helps us with:
+ 
+\begin{list}{-}{\setlength{\itemsep}{0.5cm}}
+        \item<1-> Reduce randomness
+        \item<2-> Comparison of alghorithms    
+    \end{list}
+    since the input is the same and affected by the same randomness.
+\end {frame}
+
+\begin {frame}
+\frametitle{Enviroment }
+In the enviroment it has been modeled both the different classes of users and their interaction with the "e-commerce website".
+This allows to collect disaggregated or aggregated rewards
+\end{frame}
+
+\begin {frame}
+\frametitle{Learners}
+To have a better understanding of the performances of our learners we also coded a "stupid" learner which every day randomly assigns budget and a clayrvoiant one.
+The comparison with those gives a better understanding of the different learners as the data we feed them change.
+\begin{exampleblock}{Obviously to the clairvoyant one is given the entire data to chose the best possible partition of budgets each time.}
+    \end{exampleblock}
+    
+\end{frame}
+
 \end{document}
