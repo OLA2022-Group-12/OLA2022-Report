@@ -17,43 +17,77 @@
 
 % Introduction
 
+
+
+
+
 \begin{frame}
     \frametitle{Table of Contents}
-    \begin{list}{*}{\setlength{\itemsep}{1cm}}
-        \item<1-> Enviroment 
-        \item<2-> Learners
-        \item<3-> Algorithms
-        \item<4-> Results
+    \begin{list}{*}{\setlength{\itemsep}{0.5cm}}
+        \item<1-> Enviroment and Simulator
+        \item<2-> Optimization Algorithm
+        \item<3-> Uncertain $alpha$-functions
+        \item<4-> Uncertain $alpha$-functions and numbers of item sold
+        \item<5-> Uncertain Graph Weights
+        \item<6-> Non-stationary demand curve
+        \item<7-> Context generation
     \end{list}
     
 \end{frame}
 
 
 \begin {frame}
-\frametitle{Enviroment }
-In our framework the enviroment is generating the complete class of data which are fed to the learners after being properly masked
-So the enviroment gives us a constant base on which we build the entire project. This helps us with:
- 
-\begin{list}{-}{\setlength{\itemsep}{0.5cm}}
-        \item<1-> Reduce randomness
-        \item<2-> Comparison of alghorithms    
-    \end{list}
-    since the input is the same and affected by the same randomness.
+\frametitle{Enviroment and Simulator}
+\framesubtitle{Enviroment}
+The enviroment is modelled to give as output a class cointaing all the sample values for a day of interaction for each users class.
+Single arguments of the class can be specified, if desired, also to test the algorithms in limits case.
 \end {frame}
 
 \begin {frame}
-\frametitle{Enviroment }
-In the enviroment it has been modeled both the different classes of users and their interaction with the "e-commerce website".
-This allows to collect disaggregated or aggregated rewards
+\frametitle{Enviroment and Simulator}
+\framesubtitle{Enviroment}
+In this way we can set values that define univocally:
+\begin{list}{-}{\setlength{\itemsep}{0.5cm}}
+    \item Users'class and their Interaction with the website.
+    \item The total amount of budget to subdivide.
+    \item The ratios in which every class appears in the population.
+    \item The prices of each product.
+    \item The budget the competitor spends in advertising
+\end{list}
+\end {frame}
+
+\begin {frame}
+\frametitle{Enviroment and Simulator}
+\framesubtitle{Users and their Interaction}
+Each Users class is modelled with:
+\begin{block}{ reservation price, steepness, shift and upper bound} \end{block}
+for each product, including the one of the not strategic competitor.
+Since the $alpha$-functions we had choosen aro of a sigmoidal class we need some parameters.
+\end {frame}
+
+\begin {frame}
+\frametitle{Enviroment and Simulator}
+\framesubtitle{Simulator}
+Interacting with the Enviroment it computes the margin made each day, for each of the different classes of users as an integer representing the total aggregated reward of the entire list of interactions.
+\end{frame}
+\begin {frame}
+\frametitle{Enviroment and Simulator}
+\framesubtitle{Simulator}
+It is also posssible to creata a "masked" enviroment which allows to use the different algorithms according to the data given at each step.
 \end{frame}
 
 \begin {frame}
-\frametitle{Learners}
-To have a better understanding of the performances of our learners we also coded a "stupid" learner which every day randomly assigns budget and a clayrvoiant one.
-The comparison with those gives a better understanding of the different learners as the data we feed them change.
-\begin{exampleblock}{Obviously to the clairvoyant one is given the entire data to chose the best possible partition of budgets each time.}
-    \end{exampleblock}
-    
+\frametitle{Optimization Algorithm}
+\framesubtitle{Problem Formulation}
+\label{sec:Opt_Problem Formulation}
+Our aim is finding the optimal budget per campaign in order to maximize the profit.
+which is defined as the difference between the expected margin and the spent in advertising 
+Basically, it is a maximisation subject to the obvious constraint: the sum of the daily budget can't be greater then the overall budget.
+
+The optimization problem can be expressed as follows:
+\begin{displaymath}
+F=\max_{\substack{x_i\in B}} \sum_{i=0}^n \alpha_i(x_i)p_i-x_i \ s.t. \sum_{i=0}^n x_i\leq B  
+\end{displaymath}
 \end{frame}
 
 \end{document}
