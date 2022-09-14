@@ -19,34 +19,30 @@
 
 
 
-
-
-\begin{frame}
-    \frametitle{Table of Contents}
-    \begin{list}{*}{\setlength{\itemsep}{0.5cm}}
-        \item<1-> Enviroment and Simulator
-        \item<2-> Optimization Algorithm
-        \item<3-> Uncertain $alpha$-functions
-        \item<4-> Uncertain $alpha$-functions and numbers of item sold
-        \item<5-> Uncertain Graph Weights
-        \item<6-> Non-stationary demand curve
-        \item<7-> Context generation
-    \end{list}
-    
+\begin{frame}{Project}
+    \tableofcontents[hideallsubsections]
 \end{frame}
 
-
-\begin {frame}
+\AtBeginSection[ ]
+{
+\begin{frame}{}
+    \tableofcontents[currentsection]
+\end{frame}
+}
+\section{Enviroment and Simulator}
+ 
+\begin{frame}{Fully justified}
 \frametitle{Enviroment and Simulator}
 \framesubtitle{Enviroment}
 The enviroment is modelled to give as output a class cointaing all the sample values for a day of interaction for each users class.
 Single arguments of the class can be specified, if desired, also to test the algorithms in limits case.
 \end {frame}
 
-\begin {frame}
+\begin{frame}{Fully justified}
 \frametitle{Enviroment and Simulator}
 \framesubtitle{Enviroment}
 In this way we can set values that define univocally:
+\vspace{0.5cm}
 \begin{list}{-}{\setlength{\itemsep}{0.5cm}}
     \item Users'class and their Interaction with the website.
     \item The total amount of budget to subdivide.
@@ -56,7 +52,7 @@ In this way we can set values that define univocally:
 \end{list}
 \end {frame}
 
-\begin {frame}
+\begin {frame}{Fully justified}
 \frametitle{Enviroment and Simulator}
 \framesubtitle{Users and their Interaction}
 Each Users class is modelled with:
@@ -65,18 +61,29 @@ for each product, including the one of the not strategic competitor.
 Since the $alpha$-functions we had choosen aro of a sigmoidal class we need some parameters.
 \end {frame}
 
-\begin {frame}
+\begin {frame}{Fully justified}
 \frametitle{Enviroment and Simulator}
 \framesubtitle{Simulator}
 Interacting with the Enviroment it computes the margin made each day, for each of the different classes of users as an integer representing the total aggregated reward of the entire list of interactions.
 \end{frame}
-\begin {frame}
+
+\begin {frame}{Fully justified}
 \frametitle{Enviroment and Simulator}
 \framesubtitle{Simulator}
 It is also posssible to creata a "masked" enviroment which allows to use the different algorithms according to the data given at each step.
 \end{frame}
 
-\begin {frame}
+
+\section{Optimization Algorithm}
+
+\AtBeginSection[ ]
+{
+    \begin{frame}{}
+    \tableofcontents[currentsection]
+\end{frame}
+}
+
+\begin {frame}{Fully justified}
 \frametitle{Optimization Algorithm}
 \framesubtitle{Problem Formulation}
 Our aim is finding the optimal budget per campaign in order to maximize the profit.
@@ -88,5 +95,13 @@ The optimization problem can be expressed as follows:
 F=\max_{\substack{x_i\in B}} \sum_{i=0}^n \alpha_i(x_i)p_i-x_i \ s.t. \sum_{i=0}^n x_i\leq B  
 \end{displaymath}
 \end{frame}
+
+
+
+%\section{Uncertain $alpha$-functions}
+%\section{Uncertain $alpha$-functions and numbers of item sold}
+%\section{Uncertain Graph Weights}
+%\section{Non-stationary demand curve}
+%\section{Context generation}
 
 \end{document}
