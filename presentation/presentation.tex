@@ -29,12 +29,12 @@
     \tableofcontents[currentsection]
 \end{frame}
 }
-\section{Enviroment and Simulator}
+\section{Environment and Simulator}
  
 \begin{frame}{Fully justified}
-\frametitle{Enviroment and Simulator}
-\framesubtitle{Enviroment}
-The enviroment is modelled to give as output a class cointaing all the sample values for a day of interaction for each users class.
+\frametitle{Environment and Simulator}
+\framesubtitle{Environment}
+The environment is modelled to give as output a class cointaing all the sample values for a day of interaction for each users class.
 Single arguments of the class can be specified, if desired, also to test the algorithms in limits case.
 \end {frame}
 
@@ -53,7 +53,7 @@ In this way we can set values that define univocally:
 \end {frame}
 
 \begin {frame}{Fully justified}
-\frametitle{Enviroment and Simulator}
+\frametitle{Environment and Simulator}
 \framesubtitle{Users and their Interaction}
 Each Users class is modelled with:\textbf{ reservation price, steepness, shift and upper bound} 
 for each product, including the one of the not strategic competitor.
@@ -61,15 +61,16 @@ Since the $alpha$-functions we had choosen belong to the sigmoidal class we need
 \end {frame}
 
 \begin {frame}{Fully justified}
-\frametitle{Enviroment and Simulator}
+\frametitle{Environment and Simulator}
 \framesubtitle{Simulator}
-Interacting with the Enviroment it computes the margin made each day, for each of the different classes of users as an integer representing the total aggregated reward of the entire list of interactions.
+Interacting with the environment it computes the margin made each day, for each of the different classes of users as an integer representing the total aggregated reward of the entire list of interactions.
 \end{frame}
 
 \begin {frame}{Fully justified}
 \frametitle{Enviroment and Simulator}
 \framesubtitle{Simulator}
-It is also posssible to creata a "masked" enviroment which allows to use the different algorithms according to the data given at each step.
+It is also possible to create a "masked" environment which allows to test the different algorithms according to the data given at each step. Moreover it allows us to fed the clayrvoiant alghoritm with the same set of data, but not masked, for a better comparison.
+
 \end{frame}
 
 
@@ -97,7 +98,26 @@ F=\max_{\substack{x_i\in B}} \sum_{i=0}^n \alpha_i(x_i)p_i-x_i \ s.t. \sum_{i=0}
 
 
 
-%\section{Uncertain $alpha$-functions}
+\AtBeginSection[ ]
+{
+    \begin{frame}{}
+    \tableofcontents[currentsection]
+\end{frame}
+}
+
+\section{Uncertain $alpha$-functions}
+\begin {frame}{Fully justified}
+\frametitle{Uncertain $alpha$-functions}
+Since the feature of the users are \textbf{not osservable}, the algorithm take as input the aggregated list of interactions.  
+It tries to estimate the aggregated $alpha$-function and the reward of each single product 
+\end{frame}
+
+\begin {frame}{Fully justified}
+\frametitle{Uncertain $alpha$-functions}
+\framesubtitle{Result}
+%going to insert some graph of clayrvoiantv stupid v ts v ucb1
+\end{frame}
+
 %\section{Uncertain $alpha$-functions and numbers of item sold}
 %\section{Uncertain Graph Weights}
 %\section{Non-stationary demand curve}
