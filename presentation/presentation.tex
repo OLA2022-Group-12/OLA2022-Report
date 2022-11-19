@@ -45,6 +45,69 @@
 %-----------------------------------------
 \subsection{Overview}
 
+%-----------------------------------------
+
+\begin {frame} {Fully justified}
+
+\frametitle{Environment and Simulator}
+\framesubtitle{General hypotesis}
+
+We are required to design a Enviroment which satisfies the costrain both on the e-commerce's properties and on the users' behavior. 
+In particolar we underline the following for the Ecommerce:
+\vspace{0.3cm}
+\begin{list}{-}{\setlength{\itemsep}{0.3cm}}
+    \item Unlimited units of the 5 different items.
+    \item Every day, there is a random number of potential new users subjected to noise.
+    \item Actions on the webpage are perfectly observable by the ecommerce website.
+\end{list}
+\vspace{0.5cm}
+
+\end {frame}
+
+
+% ----------------------------------------
+
+\begin {frame} {Fully justified}
+
+\frametitle{Environment and Simulator}
+\framesubtitle{General hypotesis}
+
+and we assume that the user has the following behavior:
+\vspace{0.3cm}
+\begin{list}{-}{\setlength{\itemsep}{0.3cm}}
+    \item The reservation price of the user is only over the single unit.
+    \item The users can activate parallel paths while on the webpage
+    \item The number of items a user will buy is a random variable independent of any other variable
+\end{list}
+\vspace{0.3cm}
+
+So the behavior of the user is modelled as a graph of which nodes are the products and weights are the probabilities to click from a primary item to the secondary one.
+
+\end {frame}
+
+% ----------------------------------------
+
+\begin {frame} {Fully justified}
+
+\frametitle{Environment and Simulator}
+\framesubtitle{General hypotesis}
+
+The focus of the project is to optimize the budget allocated to the campaign of 5 different items in order to maximize the profit of our e-commerce.
+The main hypotesis given are:
+\vspace{0.3cm}
+\begin{list}{-}{\setlength{\itemsep}{0.3cm}}
+    \item For every primary product, the pair and the order of the secondary products to display is fixed.
+    \item The price of every product is fixed and it is equal to the margin.
+    \item By a click to a specific ad, the user lands on the corresponding primary product.
+
+\end{list}
+\vspace{0.5cm}
+
+
+\end {frame}
+
+%-----------------------------------------
+
 \begin{frame}{Fully justified}
 
 \frametitle{Environment and Simulator}
@@ -125,10 +188,10 @@ for each product, including the one of the not strategic competitor.
 Since the $alpha$-functions we had choosen belong to the sigmoidal class we need these additional parameters.
 
 \begin{figure}[⟨r⟩]  
-\includegraphics[height=3.8cm]{img/Graphs/sigmoid.png}
+%\includegraphics[height=3.8cm]{img/Graphs/sigmoid.png}
     \end{figure}
 \end {frame}
-%do we want to explain why we choose sigmoid here or talking? and do we want to give a realistic turn on feature and so?
+%add exponential funtion.
 
 % ----------------------------------------
 
