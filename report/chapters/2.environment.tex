@@ -13,8 +13,8 @@ What will be changing is how much data the Learner will be given as input throug
 In this section the specific assumptions related to the environment modelling are listed.
 
 \begin{itemize}
-    \item Each consumer is characterized by 2 binary features, for instance: occupation (student/worker) and gender (female/male). These features will define the 3 different user classes we want to target in our advertisement campaign.
-    \item The probability for each class to be able to enter the website is fixed and known. It can be seen as the percentage over the population we are focusing with our ads.
+    \item Each consumer is characterized by 2 binary features, for instance: occupation (student/worker) and gender (female/male). These features will define the 3 different user classes that we want to target in our advertisement campaign.
+    \item The probability for each class to be able to enter the website is fixed and unknown from the learner's perspective. It can be seen as a percentage over the population that we are focusing with our ads.
     \item Each user class is distinguishable by an $alpha_i$ function expressing the ratio of users landing on the web-page where product $P_i$ is shown as the primary one. More clearly, given a campaign every class is characterized by a different profile of $alpha$ functions.
     \item The competitor's budget is assumed to be constant assuming a \textit{non-strategic player}.
 \end{itemize}
@@ -22,50 +22,96 @@ In this section the specific assumptions related to the environment modelling ar
 \section{Model Choice}
 \label{sec:env_Motivation}
 
-We chose to model the $alpha$ functions as sigmoid functions since they are constrained by a pair of horizontal asymptotes as $ x\to\pm\infty$  and this characteristic fit well the hypothesis that the maximum expected value of $alpha$ correspond to the case in which the budget allocated on that campaign is infinite. Moreover having three different parameters to attune (steepness, shift, and upper bound) gives us the possibility to better differentiate each user class.
+We chose to model the $alpha$ functions as sigmoid functions since they are constrained by a pair of horizontal asymptotes as $ x\to\pm\infty$  and this characteristic fits well the hypothesis that the maximum expected value of $alpha$ corresponds to the case in which the budget allocated on that campaign is infinite. Moreover, having three different parameters to attune (steepness, shift, and upper bound) gives us the possibility to better differentiate each user class.
 \todo{add our motivating application and reason on why we choose prob distribution for each variable and write it better, just trying latex also default ones}
 
 \section{Code Analysis}
 \label{sec:env_Code Analysis}
 
     \subsection{Enviroment}
-    The environment is composed by different objects and functions which model the users' interactions on the web-page, how users react given different budgets and it returns the final result of a day of interactions.
- 
+    The environment is composed by different objects and functions which model the users' interactions on the web-page, how users react given different budgets and how the final reward is obtained from a day of interactions.
+
         \begin{enumerate}
-            \item Enviroment data
-     
-                This data class contains all the environment's values. It is obtained passing by a random generation of the parameters, which are the only ones not know by hypothesis. The known parameters are set up by the data class constructor with default values as shown in the section \textbf{Model Choice}. After constructing this class, it can be passed to the function  \textit{get day of interactions}. If it needs to be set up with different values, such as an incomplete graph, it can simply be specified when the class is constructed.
-     
-            \item Masked Environment Data
-     
-                This data class only contains the environment values which are relevant and known at the current step; it is obtained by the fucntion \textit{create masked environment} 
-    
-            \item $\alpha$ functions.
-     
+            \item Environment Data and Masked Environment Data
+
+            These two data classes contain all the relevant information for the environment. Most of the parameters for the Environmnet Data class are completed by default at creation time, however, each one of them can be specified when the class is constructed to create a custom environment. Notably, the Environmnet Data class can be passed to the function \textit{get\_day\_of\_interactions} which generates a whole day of interactions from the specified environment. In addition, the Masked Environment Data class is a "parallel" data class w.r.t. Environment Data and it is used to hide environment parameters for certain classes of learners implemented throughout the project.
+
+            \begin{lstlisting}[style=Python]
+\@@dataclass@@/
+class EnvironmentData:
+
+    """Dataclass containing environment values. Should be constructed passing
+    the rng parameter, which is the only one not defined by default. The other
+    parameters are set up correctly by the dataclass constructor, with default
+    values as shown below. Setups correctly everything about the environment.
+    After constructing this class, it can be passed to the function
+    get_day_of_interactions. To construct it with different values they can
+    simply be specified when the class is constructed.
+    """
+
+    # The total budget to subdivide
+    total_budget: int
+
+    # Probability of every class to show up. They must add up to 1
+    class_ratios: List[float]
+
+    # Features associated to every class
+    class_features: List[List]
+
+    # Price of the 5 products
+    product_prices: List[float]
+
+    # List of class parameters for each class and product, implemented as list
+    # of lists of UserClassParameters. Each class has distinct parameters for
+    # every product
+    classes_parameters: List[List[UserClassParameters]]
+
+    # The competitor budget is assumed to be constant, since the competitor is
+    # non-strategic
+    competitor_budget: int
+
+    # Lambda parameter, which is the probability of osserving the next secondary
+    # product according to the project's assignment
+    lam: float
+
+    # Max number of items a customer can buy of a certain product. The number of
+    # bought items is determined randomly with max_items as upper bound
+    max_items: int
+
+    # Products graph's matrix. It's a empty matrix, should be initialized
+    # with populate_graphs
+    graph: np.ndarray
+
+    # List that constains for every i+1 product the secondary i+1 products
+    # that will be shown in the first and second slot
+    next_products: List[Tuple[int, int]]
+           \end{lstlisting}
+           \item $\alpha$ functions.
+
                 Computes the expected value of clicks given a certain budget for a specific function. As other parameters it needs the steepness, the shift and maximum value that characterizes the curve. Notably, the maximum value represents the maximum expected number of clicks possible.
-  
+
             \item Generation of a graph.
-    
+
                 This function generates by default a 5x5 fully connected graph without any auto-loops. It takes as input the number of nodes with a Boolean value which decides if it needs to be fully connected or not. In the last case it is also needed another integer representing the probability to not have two nodes connecting. It returns a square matrix representing every weight between any nodes.
-   
+
             \item Modelling user interaction.
-    
+
                 With the aid of the function \textit{get interaction} we can compute a single interaction and return the results. Taking as input the user class, the primary product's web page and a list in which it is also included also the competitor and the environment data; the function returns the action taken in that specific scenario, more precisely, it provides us the number of each item bought by the user belonging to the given class. This is made possible by the function \textit{Go to page} which models the interaction between user and web-page; in fact, given a user and their class, together with the Environment Data, it brings the user to a primary product and, if bought, behaves as explained in section \hyperref[sec:intro_overview]{Overview}.
-    
+
             \item Overall result of a day
-    
+
                 \textit{get day of interactions} gives us the interactions of a whole day and generates new updated parameters given a specific budget for each product as input. It also needs the \textit{Environment Data} and the total number of visitors of the e-commerce for that day.
         \end{enumerate}
 
     \subsection{Simulator}
     The simulator is the bridge between the environment and the learner. It mainly uses functions already definded in the environment to compute the rewards and to adjust the parameters as the learner improves.
-    
+
         \begin{enumerate}
             \item Computation of the rewards
-     
+
                 With the aid of the function \textit{get reward from interactions} we compute the aggregated margin and the margin for each of the 3 classes of users. This is made possible by accessing and adding the single interactions from the Environment.
-     
+
             \item Simulation
-     
+
                 This function, given the appropriate \textit{"masked"} environment, runs the simulation for a certain number of experiments in order to have results that are statistically relevant, each experiment simulates a tunable amount of days. By default, the number of experiments is set to 1 because in a real world situation we can't expect to have enough time or money to run the same experiment several times. The function returns the collected rewards for each experiment.
         \end{enumerate}
