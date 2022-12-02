@@ -159,19 +159,8 @@ In particular we want to underline the following for the e-commerce website:
     \item The number of items that a user will buy is a random variable, independent from any other variable.
 \end{itemize}
 
-
-
-\end{frame}
-
-%-----------------------------------------
-
-\begin{frame}
-
-\frametitle{Environment and Simulator}
-\framesubtitle{General hypotesis}
-   
-The behavior of a user is modelled as a graph where nodes represent product pages and weights represent the probabilities for the user to click from the primary item of the page to one of the secondaries.
-
+\todo{insert text somewhere}
+%The behavior of a user is modelled as a graph where nodes represent product pages and weights represent the probabilities for the user to click from the primary item of the page to one of the secondaries.
 
 \end{frame}
 
@@ -214,7 +203,11 @@ The environment is modelled as a python dataclass containing the following attri
 \begin{frame}[fragile]
 
 \frametitle{Environment and Simulator}
-\framesubtitle{Environment}
+\framesubtitle{User classes}
+
+We modelled the $Alpha$-functions, which compute the expected value of interaction on a product given a fixed budget, as exponential functions.
+In particular thier upper bound represents the maximum expected number of interaction possible while the maximum useful budget is amount of budget after which its increading would not lead to a ratio increase.
+
 
 \begin{lstlisting}[style=Python, basicstyle=\tiny, numbers=none, framexrightmargin=-20pt]
     # Lambda parameter, which is the probability of osserving the
@@ -250,29 +243,17 @@ The environment is modelled as a python dataclass containing the following attri
 \begin{itemize}[leftmargin=*, label={$\circ$}]
     \item Users are subdivide in classes based on their 2 binary features for a total of 3 different classes.
     \item In particular, each user class is defined by its $alpha$-functions (one for each product plus the one for the non-strategic competitor) which define the probability of landing on a given product page.
-    \item Each $alpha$-function is defined by the values: \textbf{budget}, \textbf{upper bound} and \textbf{maximum useful budget}
+    \item Each $alpha$-function is defined by the values: \textbf{reservation price}, \textbf{upper bound} and \textbf{maximum useful budget}
 \end{itemize}
 
-
-
-\end{frame}
-%-----------------------------------------
-
-\begin{frame}
-
-\frametitle{Environment and Simulator}
-\framesubtitle{User classes}
-
-We modelled the $Alpha$-functions, which compute the expected value of interaction on a product given a fixed budget, as exponential functions.
-In particular thier upper bound represents the maximum expected number of interaction possible while the maximum useful budget is amount of budget after which its increading would not lead to a ratio increase.
-
-
-\todo{do we want a new slide with a img? }
+\todo{alpha functions aren't sigmoidal! we changed to the exponential function - correct and move to a new slide maybe}
+%Since the $alpha$-functions we had choosen belong to the sigmoidal class we need these additional parameters.
 %\begin{figure}[⟨r⟩]
-%\includegraphics[height=3.8cm]{img/Graphs/.png}
+%\includegraphics[height=3.8cm]{img/Graphs/sigmoid.png}
 %\end{figure}
 
 \end{frame}
+
 % ----------------------------------------
 
 \begin{frame}
@@ -284,8 +265,7 @@ Alongside the Environment we define a Masked Environment with the purpose of hid
 
 The masked environment isn't strictly needed in the project since the learners could easily ignore the extra information, however, we wanted to face the problem with an approach aimed towards reusability and extendability and in this case (as in many others down the line) we opted for a more generalizable solution.
 
-\todo{we talk about learners without metioning them before, we need to introduce them in the introductory section
-Added slide tell me if is enough or need more introduction.}
+\todo{we talk about learners without metioning them before, we need to introduce them in the introductory section}
 
 \end{frame}
 
