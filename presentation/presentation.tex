@@ -96,11 +96,10 @@ Each page has a primary product and some secondary products, each user that land
 
 \frametitle{Introduction}
 \framesubtitle{Project scope}
-    
-The optimization has to be perfomed on different scenarios and different algorithms. 
-We had direct our focus on bandit algorithms combining Gaussian Process with Upper Confidence Bound and Thompson Sampling algorithm.
-For each different scenario the performance of the learners based on these algorithm are evaluated against the Clayrvoiant and the Stupid Learner.
 
+The optimization has to be perfomed on different scenarios and different algorithms.
+We had to direct our focus on bandit algorithms combining Gaussian Process with Upper Confidence Bound and Thompson Sampling algorithms.
+For each different scenario the performance of the learners based on these algorithm is evaluated against the Clayrvoiant and the Stupid Learner.
 
 \end{frame}
 
@@ -205,8 +204,8 @@ The environment is modelled as a python dataclass containing the following attri
 \frametitle{Environment and Simulator}
 \framesubtitle{User classes}
 
-We modelled the $Alpha$-functions, which compute the expected value of interaction on a product given a fixed budget, as exponential functions.
-In particular thier upper bound represents the maximum expected number of interaction possible while the maximum useful budget is amount of budget after which its increading would not lead to a ratio increase.
+We modelled the $\alpha$-functions, which compute the expected value of interactions on a product given a fixed budget, as exponential functions.
+In particular their upper bound represents the maximum expected number of interactions possible while the maximum useful budget isthe amount of budget after which any budget increase would not lead to a ratio increase.
 
 
 \begin{lstlisting}[style=Python, basicstyle=\tiny, numbers=none, framexrightmargin=-20pt]
@@ -241,13 +240,13 @@ In particular thier upper bound represents the maximum expected number of intera
 \framesubtitle{User classes}
 
 \begin{itemize}[leftmargin=*, label={$\circ$}]
-    \item Users are subdivide in classes based on their 2 binary features for a total of 3 different classes.
-    \item In particular, each user class is defined by its $alpha$-functions (one for each product plus the one for the non-strategic competitor) which define the probability of landing on a given product page.
-    \item Each $alpha$-function is defined by the values: \textbf{reservation price}, \textbf{upper bound} and \textbf{maximum useful budget}
+    \item Users are subdivided in classes based on their 2 binary features for a total of 3 different classes.
+    \item In particular, each user class is defined by its $\alpha$-functions (one for each product plus the one for the non-strategic competitor) which define the probability of landing on a given product page.
+    \item Each $\alpha$-function is defined by the values: \textbf{reservation price}, \textbf{upper bound} and \textbf{maximum useful budget}
 \end{itemize}
 
 \todo{alpha functions aren't sigmoidal! we changed to the exponential function - correct and move to a new slide maybe}
-%Since the $alpha$-functions we had choosen belong to the sigmoidal class we need these additional parameters.
+%Since the $\alpha$-functions we had choosen belong to the sigmoidal class we need these additional parameters.
 %\begin{figure}[⟨r⟩]
 %\includegraphics[height=3.8cm]{img/Graphs/sigmoid.png}
 %\end{figure}
@@ -358,11 +357,8 @@ We see here an example of environment initialization:
 \frametitle{Optimization Algorithm}
 \framesubtitle{Problem Formulation}
 
-\todo{needs grammar and content revision}
-
-Our aim is finding the optimal budget per campaign in order to maximize the profit.
-which is defined as the difference between the expected margin and the spent in advertising
-Basically, it is a maximisation subject to the obvious constraint: the sum of the daily budget can't be greater then the overall budget.
+The purpose of the optimization algorithm is to find the optimal budget for each campaign in order to maximize the profit, which is defined as the difference between the profits gained from selling products and the advertisement expenses.
+Basically, it is the maximization problem subject to an obvious constraint: the sum of the daily budget can't be greater then the overall budget.
 
 The optimization problem can be expressed as follows:
 \begin{displaymath}
@@ -378,9 +374,9 @@ F=\max_{\substack{x_i\in B}} \sum_{i=0}^n \alpha_i(x_i)p_i-x_i \ s.t. \sum_{i=0}
 
 \begin{frame}
 
-\frametitle{}
+\frametitle{Optimization Algorithm}
 \framesubtitle{}
-%talking about the code in words
+\todo{talking about the code in words}
 
 \end{frame}
 
@@ -388,14 +384,11 @@ F=\max_{\substack{x_i\in B}} \sum_{i=0}^n \alpha_i(x_i)p_i-x_i \ s.t. \sum_{i=0}
 
 \begin{frame}
 
-\frametitle{Algorithm Optimization}
+\frametitle{Optimization Algorithm}
 \framesubtitle{}
-%add snippet of code
+\todo{snippets of code}
 
 \end{frame}
-
-% ----------------------------------------
-
 
 % Uncertain alpha functions -------------------------------------------------------------
 
@@ -408,7 +401,7 @@ F=\max_{\substack{x_i\in B}} \sum_{i=0}^n \alpha_i(x_i)p_i-x_i \ s.t. \sum_{i=0}
 
 % ----------------------------------------
 
-\section{Uncertain alpha-functions}
+\section{Uncertain $\alpha$-functions}
 
 % ----------------------------------------
 
@@ -418,26 +411,25 @@ F=\max_{\substack{x_i\in B}} \sum_{i=0}^n \alpha_i(x_i)p_i-x_i \ s.t. \sum_{i=0}
 
 \begin{frame}
 
-\frametitle{Uncertain alpha-functions}
+\frametitle{Uncertain $\alpha$-functions}
 \framesubtitle{Scenario}
 
-We assume now that the binary features of the users can not be observed and therefore data are aggregated.
+We assume now that the binary features of the users cannot be observed and therefore data are aggregated.
 
 \end{frame}
-    
+
 % ----------------------------------------
 
 \subsection{Algorithm}
 
 % ----------------------------------------
-    
+
 \begin{frame}
-\frametitle{Uncertain alpha-functions}
+\frametitle{Uncertain $\alpha$-functions}
 \framesubtitle{Algorithm}
 
-Since the feature of the users are \textbf{not osservable}, the algorithm receive all the interactions minus the class data.
+Since the feature of the users are \textbf{not observable}, the algorithm receives all the interactions minus the class data.
 It tries to estimate the reward given by each single product.
-
 
 \end{frame}
 
@@ -445,7 +437,7 @@ It tries to estimate the reward given by each single product.
 
 \begin{frame}
 
-\frametitle{Uncertain $alpha$-functions}
+\frametitle{Uncertain $\alpha$-functions}
 \framesubtitle{Result}
 \todo{: going to insert some graph of clayrvoiantv stupid}
 
@@ -453,7 +445,7 @@ It tries to estimate the reward given by each single product.
 
 % Uncertain alpha functions and number of items sold ------------------------------------
 
-%\section{Uncertain $alpha$-functions and number of items sold}
+%\section{Uncertain $\alpha$-functions and number of items sold}
 
 % Uncertain graph weights ---------------------------------------------------------------
 
@@ -470,5 +462,5 @@ It tries to estimate the reward given by each single product.
 \end{document}
 
 
-%NOTE TO THE US:
+%NOTE TO US:
 %%\centering if we want the presentation to be power-point style
