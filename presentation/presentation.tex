@@ -405,6 +405,71 @@ F=\max_{\substack{x_i\in B}} \sum_{i=0}^n \alpha_i(x_i)p_i-x_i \ s.t. \sum_{i=0}
 
 % ----------------------------------------
 
+\subsection{General Approach}
+
+% ----------------------------------------
+
+\begin{frame}
+
+\frametitle{General Approach}
+\framesubtitle{}
+    
+In order to make a more universal modus operandi, the Generic Learner Class is a costum class in python in whitch all our learner belong.
+This class is for interactive agents capable of learning the budget distribution for a set of subcampaigns from the specific environment in which they exist.
+
+\end{frame}
+        
+% ----------------------------------------
+
+\begin{frame}
+
+\frametitle{General Approach}
+\framesubtitle{Learn and Predict}
+
+In particular this class is characterized by the actions of learning from the interactions and predicting best budget distribution.
+Each learner will have different set of information given to him from the masked enviroment accordingly with the project;
+and potencially could have different algorithm to learn and predict.
+
+\end{frame}
+    
+% ----------------------------------------
+
+\begin{frame}
+
+\frametitle{General Approach}
+\framesubtitle{Learn and Predict}
+
+Both Thompson Sampling and Upper Confidence Bound are the bandit algorithm, combined with Gaussian Process, that the learners use.
+\todo{do we want here an example of the regret of 1 the learners as the time horrizion become larget to show the logartmic increase of the regret? and to show linearly increase with cartinality of arm?}
+    
+\end{frame}
+
+% ----------------------------------------
+
+\begin{frame}
+
+\frametitle{General Approach}
+\framesubtitle{Comparing results}
+
+For each different learner we will show our practical result by comparing the reward of each algorithm against the one given in the same enviroment setting from Clayrvoiant learner and the "stupid" one.
+This helps to fix a upper bound and a lower bound to the performance of our learner.
+
+\end{frame}
+    
+% ----------------------------------------
+    
+\begin{frame}
+
+\frametitle{General Approach}
+\framesubtitle{Comparing results}
+    
+In particular the Clayrvoiant Learner learn and predict on complete dataset available, de facto solving the optimization problem as at each time while the "stupid" one always subdivides equally the budget between products and
+doesn't update its prediction.
+    
+\end{frame}
+
+%----------------------------------------
+
 \subsection{Contextual hypotesis}
 
 % ----------------------------------------
@@ -425,6 +490,7 @@ We assume now that the binary features of the users cannot be observed and there
 % ----------------------------------------
 
 \begin{frame}
+
 \frametitle{Uncertain $\alpha$-functions}
 \framesubtitle{Algorithm}
 
@@ -439,7 +505,8 @@ It tries to estimate the reward given by each single product.
 
 \frametitle{Uncertain $\alpha$-functions}
 \framesubtitle{Result}
-\todo{: going to insert some graph of clayrvoiantv stupid}
+
+\todo{insert some graph of performance vs clayrvoiant vs stupid}
 
 \end{frame}
 
