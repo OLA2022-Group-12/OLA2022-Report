@@ -48,7 +48,7 @@
 \usepackage{blindtext}
 % HELPER PACKAGES (TODO: REMOVE IN FINAL) %
 
-\usetheme{Copenhagen} % THEME
+\usetheme{Antibes} % THEME
 
 %----------------------------------------------------------------------------------------
 %	DOCUMENT
@@ -60,8 +60,10 @@
 \frame{\titlepage}
 
 % Table of Contents
-\begin{frame}{Project}
+\begin{frame}{Presentation Outline}
+\begin{tiny}
     \tableofcontents[hideallsubsections]
+\end{tiny}
 \end{frame}
 
 % Environment and Simulation ------------------------------------------------------------
@@ -81,11 +83,12 @@
 
 \begin{frame}
 
-\frametitle{Introduction}
-\framesubtitle{Project scope}
+\frametitle{Project Scope}
+\framesubtitle{Assignment}
 
-The focus of this project is to optimize the budget allocated for the advertisement campaigns of 5 different items in order to maximize the profit of an e-commerce website that sells products to the public.
-Each page has a primary product and some secondary products, each user that lands on a page has a possibility to buy the primary prodcut and/or proceed to one of the secondaries with a given probability, the process repeats.
+The focus of this project is to optimize the budget allocated for the \textbf{advertisement campaigns} of 5 different items in order to maximize the profit of an \textit{e-commerce website} that sells products to the public.
+
+Each page has a \textbf{primary product} and some \textbf{secondary products}, each user that lands on a page has a possibility to buy the primary prodcut and/or proceed to one of the secondaries with a given probability, the process repeats.
 
 \end{frame}
 
@@ -94,11 +97,13 @@ Each page has a primary product and some secondary products, each user that land
 
 \begin{frame}
 
-\frametitle{Introduction}
-\framesubtitle{Project scope}
+\frametitle{Project Scope}
+\framesubtitle{Techniques}
 
-The optimization has to be perfomed on different scenarios and different algorithms.
-We had to direct our focus on bandit algorithms combining Gaussian Process with Upper Confidence Bound and Thompson Sampling algorithms.
+The optimization has to be perfomed on different scenarios and using different algorithms.
+
+We had to direct our focus on bandit algorithms combining Gaussian Processes with Upper Confidence Bound and Thompson Sampling algorithms.
+
 For each different scenario the performance of the learners based on these algorithm is evaluated against the Clayrvoiant and the Stupid Learner.
 
 \end{frame}
@@ -107,21 +112,20 @@ For each different scenario the performance of the learners based on these algor
 
 \begin{frame}
 
-\frametitle{Introduction}
-\framesubtitle{General hypoteses}
+\frametitle{General hypoteses}
 
 The main general hypoteses that were given to us are:
 \begin{itemize}[label={-}]
-    \item For every primary product, the secondary products to display and their order is fixed.
+    \item For every \textit{primary product}, the \textit{secondary products} to display and their order is fixed.
     \item The price of every product is fixed and it is equal to the margin.
-    \item By clicking a specific ad, the user lands on the corresponding primary product.
+    \item By clicking on a specific ad, the user lands on the corresponding \textit{primary product}.
 \end{itemize}
 
 \end{frame}
 
 % ----------------------------------------
 
-\section{Environment and Simulator}
+\section{Environment and Simulation}
 
 %-----------------------------------------
 
@@ -131,14 +135,15 @@ The main general hypoteses that were given to us are:
 
 \begin{frame}
 
-\frametitle{Environment and Simulator}
-\framesubtitle{General hypotesis}
+\frametitle{Assumptions}
+\framesubtitle{E-commerce website}
 
-For this project, we are required to design an Environment that satisfies various constraints both on the e-commerce site's properties and on the users' behavior; in addition, since most of the tasks were generic, we had to come up with some of our own assumptions.
-In particular we want to underline the following for the e-commerce website:
+For this project, we are required to design an \textbf{Environment} that satisfies various constraints both on the e-commerce site's properties and on the users' behavior; in addition, since most of the tasks were generic, we had to come up with some of our own assumptions.
+
+In particular we want to underline the following assumptions for the e-commerce website:
 \begin{itemize}[label={-}]
-    \item The website has unlimited units for the 5 different items.
-    \item Actions on the webpages are perfectly observable by the ecommerce website.
+    \item The website has unlimited stock for the 5 different items.
+    \item Actions on the various webpages are \textbf{perfectly observable} by the e-commerce website.
 \end{itemize}
 
 \end{frame}
@@ -147,14 +152,14 @@ In particular we want to underline the following for the e-commerce website:
 
 \begin{frame}
 
-\frametitle{Environment and Simulator}
-\framesubtitle{General hypotesis}
+\frametitle{Assumptions}
+\framesubtitle{Users}
 
 ...and we assume that the users present the following behaviors:
 \begin{itemize}[label={-}]
     \item Every day, there is a random number (subject to noise) of potential new users.
-    \item The reservation price for each user is always over the single unit.
-    \item The users can activate parallel paths while on the webpage.
+    \item The \textit{reservation price} for each user is always over the single unit. \todo{?}
+    \item The users can activate parallel paths while on the website.
     \item The number of items that a user will buy is a random variable, independent from any other variable.
 \end{itemize}
 
@@ -171,8 +176,8 @@ In particular we want to underline the following for the e-commerce website:
 
 \begin{frame}[fragile]
 
-\frametitle{Environment and Simulator}
-\framesubtitle{Environment}
+\frametitle{Environment}
+\framesubtitle{Structure}
 
 The environment is modelled as a python dataclass containing the following attributes:
 
@@ -201,12 +206,8 @@ The environment is modelled as a python dataclass containing the following attri
 
 \begin{frame}[fragile]
 
-\frametitle{Environment and Simulator}
-\framesubtitle{User classes}
-
-We modelled the $\alpha$-functions, which compute the expected value of interactions on a product given a fixed budget, as exponential functions.
-In particular their upper bound represents the maximum expected number of interactions possible while the maximum useful budget isthe amount of budget after which any budget increase would not lead to a ratio increase.
-
+\frametitle{Environment}
+\framesubtitle{Structure}
 
 \begin{lstlisting}[style=Python, basicstyle=\tiny, numbers=none, framexrightmargin=-20pt]
     # Lambda parameter, which is the probability of osserving the
@@ -236,20 +237,14 @@ In particular their upper bound represents the maximum expected number of intera
 
 \begin{frame}
 
-\frametitle{Environment and Simulator}
-\framesubtitle{User classes}
+\frametitle{Environment}
+\framesubtitle{Masked Environment}
 
-\begin{itemize}[leftmargin=*, label={$\circ$}]
-    \item Users are subdivided in classes based on their 2 binary features for a total of 3 different classes.
-    \item In particular, each user class is defined by its $\alpha$-functions (one for each product plus the one for the non-strategic competitor) which define the probability of landing on a given product page.
-    \item Each $\alpha$-function is defined by the values: \textbf{reservation price}, \textbf{upper bound} and \textbf{maximum useful budget}
-\end{itemize}
+Alongside the \textbf{Environment} we define a \textbf{Masked Environment} with the purpose of \textit{hiding crucial information} to the learners since each type of learner should only have access to a subset of all the information available in the environment dictated by the type of learner.
 
-\todo{alpha functions aren't sigmoidal! we changed to the exponential function - correct and move to a new slide maybe}
-%Since the $\alpha$-functions we had choosen belong to the sigmoidal class we need these additional parameters.
-%\begin{figure}[⟨r⟩]
-%\includegraphics[height=3.8cm]{img/Graphs/sigmoid.png}
-%\end{figure}
+The masked environment isn't strictly needed in the project since the learners could easily ignore the extra information, however, we wanted to face the problem with an approach aimed towards reusability and extendability and in this case (as in many others down the line) we opted for a more \textbf{generalizable} solution.
+
+\todo{we talk about learners without metioning them before, we need to introduce them in the introductory section}
 
 \end{frame}
 
@@ -257,14 +252,27 @@ In particular their upper bound represents the maximum expected number of intera
 
 \begin{frame}
 
-\frametitle{Environment and Simulator}
-\framesubtitle{Masked Environment}
+\frametitle{Users}
+\framesubtitle{User parameters}
 
-Alongside the Environment we define a Masked Environment with the purpose of hiding crucial information to the learners since each type of learner should only have access to a subset of all the information available in the environment dictated by the type of learner.
+We modelled the $\alpha$-functions, which compute the expected value of interactions on a product given a fixed budget, as \textbf{exponential functions}.
 
-The masked environment isn't strictly needed in the project since the learners could easily ignore the extra information, however, we wanted to face the problem with an approach aimed towards reusability and extendability and in this case (as in many others down the line) we opted for a more generalizable solution.
+In particular their \textit{upper bound} represents the maximum expected number of interactions possible while the \textit{maximum useful budget} is the amount of budget after which any budget increase would not lead to a ratio increase.
 
-\todo{we talk about learners without metioning them before, we need to introduce them in the introductory section}
+\end{frame}
+
+% ----------------------------------------
+
+\begin{frame}
+
+\frametitle{Users}
+\framesubtitle{User classes}
+
+\begin{itemize}[leftmargin=*, label={$\circ$}]
+    \item Users are subdivided in classes based on their \textit{2 binary features} for a total of \textit{3 different classes}.
+    \item In particular, each user class is defined by its $\alpha$-functions (one for each product plus the one for the non-strategic competitor) which define the probability of landing on a given product page.
+    \item Each $\alpha$-function is defined by the values: \textbf{reservation price}, \textbf{upper bound} and \textbf{maximum useful budget}
+\end{itemize}
 
 \end{frame}
 
@@ -276,12 +284,12 @@ The masked environment isn't strictly needed in the project since the learners c
 
 \begin{frame}
 
-\frametitle{Environment and Simulator}
-\framesubtitle{Randomness in the Environment}
+\frametitle{Randomness in the Environment}
+\framesubtitle{Non determinism}
 
 \begin{itemize}[leftmargin=*, label={$\circ$}]
-    \item For the sake of representing a real scenario, most of the values that are not known a priori are randomly generated and every variable that evolves through time without our direct control has elements of randomness to it (for instance, each day we randomly get the number of active total users in our scenario by using a gaussian distribution with tunable mean and standard deviation).
-    \item Even though most of the randomness is tunable and controlled through seeded generators, there are still impactful elements of non determinism (i.e. the Dirichlet distribution) that are not possible to control in any way.
+    \item For the sake of representing a real scenario, most of the values that are not known a priori are \textit{randomly generated} and every variable that evolves through time without our direct control has elements of randomness to it (for instance, each day we randomly get the number of active total users in our scenario by using a gaussian distribution with tunable mean and standard deviation).
+    \item Even though most of the randomness is tunable and controlled through seeded generators, there are still \textbf{impactful elements of non determinism} (i.e. the Dirichlet distribution) that are not possible to control in any way.
 \end{itemize}
 
 \end{frame}
@@ -290,16 +298,10 @@ The masked environment isn't strictly needed in the project since the learners c
 
 \begin{frame}
 
-\frametitle{Environment and Simulator}
-\framesubtitle{Example of Environment}
+\frametitle{Randomness in the Environment}
+\framesubtitle{Consequences}
 
-We see here an example of environment initialization:
-\todo{improve legibility}
-
-
-%\begin{figure}[<t>]
-%   \includegraphics[height=6cm]{img/Graphs/Example_environment.png}
-%\end{figure}
+\todo{how does non determinism affect clairvoyant results?}
 
 \end{frame}
 
@@ -311,13 +313,13 @@ We see here an example of environment initialization:
 
 \begin{frame}
 
-\frametitle{Environment and Simulator}
-\framesubtitle{Daily Simulation}
+\frametitle{Daily Simulation}
+\framesubtitle{Purpose}
 
 \begin{itemize}[leftmargin=*, label={$\circ$}]
-    \item The Simulation class is the main engine that brings together learner and environment by making them interact with each other while offering an interface to customize the execution.
+    \item The \textbf{Simulation} class is the main engine that brings together \textit{learners} and \textit{environment} by making them interact with each other while offering an interface to customize the execution.
     \item The basic idea of the simulation is to simulate a real scenario day by day using the environment to generate interactions with the website according to the budgets that the current learner proposed and then, feed the results back to the learner to make it actually learn.
-    \item Repeating the simulation execution step for each day until an arbitrary time horizon is reached grants us all the data needed to evaluate the performance of our learner.
+    \item Repeating the simulation execution step for each day until an arbitrary \textbf{time horizon} is reached grants us all the data needed to evaluate the performance of our learner.
 \end{itemize}
 
 \end{frame}
@@ -326,8 +328,8 @@ We see here an example of environment initialization:
 
 \begin{frame}
 
-\frametitle{Environment and Simulator}
-\framesubtitle{Daily Simulation}
+\frametitle{Daily Simulation}
+\framesubtitle{Example}
 
 \todo{insert generic learner execution plot over n days}
 
@@ -354,11 +356,10 @@ We see here an example of environment initialization:
 
 \begin{frame}
 
-\frametitle{Optimization Algorithm}
-\framesubtitle{Problem Formulation}
+\frametitle{Problem formulation}
 
-The purpose of the optimization algorithm is to find the optimal budget for each campaign in order to maximize the profit, which is defined as the difference between the profits gained from selling products and the advertisement expenses.
-Basically, it is the maximization problem subject to an obvious constraint: the sum of the daily budget can't be greater then the overall budget.
+The purpose of the \textbf{optimization algorithm} is to find the \texit{optimal budget} for each campaign in order to maximize the \texit{profit}, which is defined as the difference between the profits gained from selling products and the advertisement expenses.
+Basically, it is a maximization problem subject to an obvious constraint: the sum of the daily budget can't be greater then the overall budget.
 
 The optimization problem can be expressed as follows:
 \begin{displaymath}
@@ -371,11 +372,13 @@ F=\max_{\substack{x_i\in B}} \sum_{i=0}^n \alpha_i(x_i)p_i-x_i \ s.t. \sum_{i=0}
 
 \subsection{Algorithm}
 
+% ----------------------------------------
 
 \begin{frame}
 
-\frametitle{Optimization Algorithm}
-\framesubtitle{}
+\frametitle{Code}
+\framesubtitle{Functioning}
+
 \todo{talking about the code in words}
 
 \end{frame}
@@ -384,8 +387,9 @@ F=\max_{\substack{x_i\in B}} \sum_{i=0}^n \alpha_i(x_i)p_i-x_i \ s.t. \sum_{i=0}
 
 \begin{frame}
 
-\frametitle{Optimization Algorithm}
-\framesubtitle{}
+\frametitle{Code}
+\framesubtitle{Example}
+
 \todo{snippets of code}
 
 \end{frame}
