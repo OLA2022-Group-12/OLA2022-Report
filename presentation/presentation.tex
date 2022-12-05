@@ -411,37 +411,38 @@ F=\max_{\substack{x_i\in B}} \sum_{i=0}^n \alpha_i(x_i)p_i-x_i \ s.t. \sum_{i=0}
 
 \begin{frame}
 
-\frametitle{General Approach}
-\framesubtitle{}
-    
-In order to make a more universal modus operandi, the Generic Learner Class is a costum class in python in whitch all our learner belong.
-This class is for interactive agents capable of learning the budget distribution for a set of subcampaigns from the specific environment in which they exist.
+\frametitle{Uncertain $\alpha$-functions}
+\framesubtitle{General Approach}
+
+In order for our project to have a more general outline, we decided to model a generic Learner interface to standardize how our agents should be expected to behave while learning the budget distribution for a set of subcampaigns in a specific scenario defined by the environment.
+
+In particular, each Learner is characterized by the \textit{learn} and \textit{predict} actions.
+Every different type of learner will also receive a customized set of information filtered by the masked enviroment (in line with each project step) and potentially employs different algorithms to learn and predict the various budgets.
 
 \end{frame}
-        
+
 % ----------------------------------------
 
 \begin{frame}
 
-\frametitle{General Approach}
-\framesubtitle{Learn and Predict}
+\frametitle{Uncertain $\alpha$-functions}
+\framesubtitle{General Approach}
 
-In particular this class is characterized by the actions of learning from the interactions and predicting best budget distribution.
-Each learner will have different set of information given to him from the masked enviroment accordingly with the project;
-and potencially could have different algorithm to learn and predict.
+\todo{code for Learner}
 
 \end{frame}
-    
+
 % ----------------------------------------
 
 \begin{frame}
 
-\frametitle{General Approach}
-\framesubtitle{Learn and Predict}
+\frametitle{Uncertain $\alpha$-functions}
+\framesubtitle{General Approach}
 
-Both Thompson Sampling and Upper Confidence Bound are the bandit algorithm, combined with Gaussian Process, that the learners use.
-\todo{do we want here an example of the regret of 1 the learners as the time horrizion become larget to show the logartmic increase of the regret? and to show linearly increase with cartinality of arm?}
-    
+Both Thompson Sampling (TS) and Upper Confidence Bound (UCB, in particular UCB1), in conjunction with Gaussian Processes are the algorithms chosen for the learners to use.
+
+\todo{insert TS and UCB1 formulations}
+
 \end{frame}
 
 % ----------------------------------------
@@ -451,21 +452,24 @@ Both Thompson Sampling and Upper Confidence Bound are the bandit algorithm, comb
 \frametitle{General Approach}
 \framesubtitle{Comparing results}
 
-For each different learner we will show our practical result by comparing the reward of each algorithm against the one given in the same enviroment setting from Clayrvoiant learner and the "stupid" one.
-This helps to fix a upper bound and a lower bound to the performance of our learner.
+For each different learner, when possible, we will show our results through the comparison of the rewards obtained by each algorithm against the rewards achieved (in the same enviroment setting) from the Clairvoyant learner and the Stupid learner.
+This, aside from theoretical formulations, will help us to define upper bounds and lower bounds for different solutions.
+
 
 \end{frame}
-    
+
 % ----------------------------------------
-    
+
 \begin{frame}
 
 \frametitle{General Approach}
 \framesubtitle{Comparing results}
-    
+
 In particular the Clayrvoiant Learner learn and predict on complete dataset available, de facto solving the optimization problem as at each time while the "stupid" one always subdivides equally the budget between products and
 doesn't update its prediction.
-    
+
+\todo{briefly explain what is the stupid learner}
+\todo{this two slides repeat a lot without adding much, we need to move this part in the Introduction and merge this with the slide that already talks about this}
 \end{frame}
 
 %----------------------------------------
@@ -479,7 +483,11 @@ doesn't update its prediction.
 \frametitle{Uncertain $\alpha$-functions}
 \framesubtitle{Scenario}
 
-We assume now that the binary features of the users cannot be observed and therefore data are aggregated.
+We now assume that the binary features of the users cannot be observed and therefore user data is aggregated.
+
+Since the features of the users are \textbf{not observable}, the algorithm receives all the interactions minus the class data.
+
+\todo{are you sure that this is right? We cannot observe the class parameters, not the class itself. What is unknown here is the shape of the alpha function!}
 
 \end{frame}
 
@@ -494,8 +502,9 @@ We assume now that the binary features of the users cannot be observed and there
 \frametitle{Uncertain $\alpha$-functions}
 \framesubtitle{Algorithm}
 
-Since the feature of the users are \textbf{not observable}, the algorithm receives all the interactions minus the class data.
-It tries to estimate the reward given by each single product.
+\todo{how do we solve the problem}
+\todo{how the algorithm works}
+\todo{code snippet (if needed)}
 
 \end{frame}
 
