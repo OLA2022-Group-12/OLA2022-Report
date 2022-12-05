@@ -470,6 +470,36 @@ It tries to estimate the reward given by each single product.
 
 %-----------------------------------------
 
+\subsection{General Remarks}
+
+%-----------------------------------------
+
+\begin{frame}
+
+\frametitle{Context Generation}
+\framesubtitle{Basics}
+
+The goal of \textbf{context generation} and \textbf{contextual bandit algorithms} is to employ a (partially) disaggregated approach in order to better exploit the differences of the users that belong to different classes.
+
+This is made possible by using a specialized Learner for each context and an \textit{offline context generation algorithm} that decides which contexts are worth to target by isolating them from the aggregated data.
+
+Each context is able to target a set of features, and a \textbf{context structure} is a set of contexts that targets all the existing features without any overlap.
+
+\end{frame}
+
+%-----------------------------------------
+
+\begin{frame}
+
+\frametitle{Context Generation}
+\framesubtitle{}
+
+\todo{todo}
+
+\end{frame}
+
+%-----------------------------------------
+
 \subsection{Assumptions}
 
 %-----------------------------------------
@@ -477,22 +507,31 @@ It tries to estimate the reward given by each single product.
 \begin{frame}
 
 \frametitle{Context Generation}
-\framesubtitle{}
-\todo{todo}
+\framesubtitle{Implementation challenges}
+
+Context generation has been, by far, the \textit{toughest} task that we faced on this whole project.
+
+Even after many meetings and discussions we felt that there was something that didn't click with our interpretation since we didn't find a way to give a complete meaning to the dataset collected by our active bandits due to how the prediction and the rewards worked in our scenario.
+
+In the end, our final results for this step were \textbf{unsatisfactory} and there is still wide room for improvement.
 
 \end{frame}
-
-%-----------------------------------------
-
-\subsection{Theory}
 
 %-----------------------------------------
 
 \begin{frame}
 
 \frametitle{Context Generation}
-\framesubtitle{}
-\todo{todo}
+\framesubtitle{Compromises}
+
+Given the difficulties that we encountered, we decided to make some compromises in order to still carry out the task to an end:
+
+\begin{itemize}[label={-}]
+    \item The e-commerce website company owns a simulation capable of simulating interactions.
+    \item Learners are trained on the fake simulation since we can't get enough information from the logs.
+    \item The best expected reward for a given context is considered as the maximum reward experienced by a learner on a fake simulation run.
+    \item We used the Hoeffding bound to calculate lower bounds for both the probability and the best expected reward for the contexts
+\end{itemize}
 
 \end{frame}
 
@@ -505,22 +544,63 @@ It tries to estimate the reward given by each single product.
 \begin{frame}
 
 \frametitle{Context Generation}
-\framesubtitle{}
-\todo{todo}
+\framesubtitle{Generation}
+
+We generate contexts following a \textbf{greedy algorithm} that, given a context $c$:
+
+\begin{itemize}[label={*}]
+    \item Considers all the possible binary 1-feature splits $\{c_i^0$, $c_i^1\}_n$ for the features not present in $c$.
+    \item Creates and evaluates a new learner for each split $c_i^j$, obtaining the \textbf{context probability} $p_i^j$ and the \textbf{best expected reward} $\mu_i^j$.
+    \item Evaluates the \textbf{splitting condition} on each couple of splits $(c_i^0$, $c_i^1)$ w.r.t the original context $c$ while deciding which split is the best one (if it exists).
+    \item If a split has been made, repeat all the operations recursively on the new contexts until \textit{no split is made} or \textit{no split is possible}.
+\end{itemize}
 
 \end{frame}
-
-%-----------------------------------------
-
-\subsection{Remarks}
 
 %-----------------------------------------
 
 \begin{frame}
 
 \frametitle{Context Generation}
-\framesubtitle{}
-\todo{todo}
+\framesubtitle{Split condition}
+
+Since utilizing multiple contexts is an expensive operation and our \textit{greedy algorithm} is \textbf{not} guranteed to find the optimal solution, we want to be sure that when we introuduce new contexts, it is actually worth to do so.
+
+We use a particular \textit{splitting condition} that exploits lower bounds in order to set a higher threshold for the quality of our splits:
+
+\begin{Large}
+    \begin{displaymath}
+        \underline{p}_i^0 \underline{\mu}_i^0 + \underline{p}_i^1 \underline{\mu}_i^1 \geq \underline{\mu}_i
+    \end{displaymath}
+\end{Large}
+
+\end{frame}
+
+%-----------------------------------------
+
+\begin{frame}
+
+\frametitle{Context Generation}
+\framesubtitle{Utilization}
+
+Once a certain number of contexts has been established, a \textbf{Contextual Learner} will be able to assign an \textbf{Alphaless Learner} to each context and obtain their raw predictions by utilizing the function \textbf{predict\_raw} (which returns an un-optimized array of predictions) and then running the optimization algorithm on all the predictions gathered this way.
+
+The resulting \textit{superarm} is then passed to the \textbf{Simulation} which, in return, generates the interactions for the day by weighting the different classes according to the disaggregated predictions.
+
+\end{frame}
+
+%-----------------------------------------
+
+\subsection{Results}
+
+%-----------------------------------------
+
+\begin{frame}
+
+\frametitle{Context Generation}
+\framesubtitle{Results}
+
+\todo{Insert results}
 
 \end{frame}
 
