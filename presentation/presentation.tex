@@ -46,6 +46,7 @@
 \usepackage{todonotes}
 \presetkeys{todonotes}{inline}{}
 \usepackage{blindtext}
+%\usepackage{amsmath} %math packages dunno if is the best.
 % HELPER PACKAGES (TODO: REMOVE IN FINAL) %
 
 \usetheme{Copenhagen} % THEME
@@ -248,7 +249,7 @@ In particular their upper bound represents the maximum expected number of intera
 \todo{alpha functions aren't sigmoidal! we changed to the exponential function - correct and move to a new slide maybe}
 %Since the $\alpha$-functions we had choosen belong to the sigmoidal class we need these additional parameters.
 %\begin{figure}[⟨r⟩]
-%\includegraphics[height=3.8cm]{img/Graphs/sigmoid.png}
+%\includegraphics[height=3.8cm]{img/Graphs/exponential.png}
 %\end{figure}
 
 \end{frame}
@@ -423,12 +424,43 @@ Every different type of learner will also receive a customized set of informatio
 
 % ----------------------------------------
 
-\begin{frame}
+\begin{frame}[fragile]
 
 \frametitle{Uncertain $\alpha$-functions}
 \framesubtitle{General Approach}
 
-\todo{code for Learner}
+%
+%Arguments: interactions: the interactions of the users which led to the given reward reward: the reward obtained from the environment based on the prediction given, needed for the tuning of internal properties done by the learner
+%prediction: array containing the previous budget evaluation of the learner
+%
+%Arguments: data: up-to-date, complete or incomplete environment information that is used by the learner in order to make the inference
+%Returns: a tuple containing a list of values (corresponding to the budgets inferred given the knowledge obtained by the learner until now) and a list of features (referring to which particular customers were the budgets aimed for, if None, the budgets apply to all the customers)
+
+
+
+\begin{lstlisting}[style=Python, basicstyle=\tiny, numbers=none, framexrightmargin=-20pt]
+class Learner(ABC):
+
+#Updates the learner's properties according to the reward received.
+@abstractmethod
+def     learn(self, interactions: List[Interaction], reward: float,
+             prediction: np.ndarray):
+ pass
+
+ #Makes an inference about the values of the budgets for the subcampaigns
+ #from the information got over time and the current environment
+
+@abstractmethod 
+def     predict(self, data: MaskedEnvironmentData) -> 
+        Tuple[np.ndarray, Optional[List[List[Feature]]]]: 
+pass
+
+#Creates a figure and plots showing the status of learning progress
+@abstractmethod 
+def     show_progress(self, fig: plt.Figure):
+pass
+    
+\end{lstlisting}
 
 \end{frame}
 
@@ -441,7 +473,62 @@ Every different type of learner will also receive a customized set of informatio
 
 Both Thompson Sampling (TS) and Upper Confidence Bound (UCB, in particular UCB1), in conjunction with Gaussian Processes are the algorithms chosen for the learners to use.
 
-\todo{insert TS and UCB1 formulations}
+\todo{insert TS formulations}
+
+\end{frame}
+
+% ----------------------------------------
+
+\begin{frame}
+
+\frametitle{General Approach}
+\framesubtitle{UCB1 formulation}
+
+In this algorithm, every arm is associated with an upper confidence bound which provides an estimation of the reward provided by playing that arm.
+Then, after have played all arms to have an indication of thier reward, at every trial the arm, with the highest upper confidence bound, is picked (optimism in the face of uncertainty).
+After having collected the realization of the reward of the chosen arm, the upper confidence bound is updated.
+
+
+\end{frame}
+
+% ----------------------------------------
+
+\begin{frame} [fragile]
+
+\frametitle{General Approach}
+\framesubtitle{UCB1 formulation}
+
+The main peculiarity combining gaussian process with UCB1 is that is possible to take advantage of the GP's confidence interval and modeling it as a confidence bound.
+
+\begin{lstlisting}[style=Python, basicstyle=\tiny, numbers=none, framexrightmargin=-20pt]
+
+    def estimation(self):
+    upper_bounds = (self.means + self.confidence * 1.96 * self.sigmas)
+                 * self.normalize_factor
+return upper_bounds
+
+\end{lstlisting}
+
+The theoretical regret given by this kind of algorithm is buonded by:
+
+\begin{displaymath}
+  P(UCB1) \le  \sum_{a:\mu_a < \mu_a^*} \frac{4log(T)}{\Delta_a} + 8\Delta_a 
+\end{displaymath}
+where $\Delta_a$ is the difference in expected reward between the optimal arm $a^*$ and the arm $a$
+
+\todo{fix edges(probably no need code)}
+
+\end{frame}
+
+% ----------------------------------------
+
+\begin{frame}
+
+\frametitle{General Approach}
+\framesubtitle{TS formulation}
+
+\todo{fix edges(probably no need code slide before)}
+
 
 \end{frame}
 
@@ -468,8 +555,8 @@ This, aside from theoretical formulations, will help us to define upper bounds a
 In particular the Clayrvoiant Learner learn and predict on complete dataset available, de facto solving the optimization problem as at each time while the "stupid" one always subdivides equally the budget between products and
 doesn't update its prediction.
 
-\todo{briefly explain what is the stupid learner}
-\todo{this two slides repeat a lot without adding much, we need to move this part in the Introduction and merge this with the slide that already talks about this}
+\todo{briefly explain what is the stupid learner can i cancel this one?}
+\todo{this two slides repeat a lot without adding much, we need to move this part in the Introduction and merge this with the slide that already talks about this. i agree i was actually thinking this all sub section could ahve be placed somewhere in the Introduction or after the optimization problem}
 \end{frame}
 
 %----------------------------------------
