@@ -476,7 +476,7 @@ It tries to estimate the reward given by each single product.
 
 \begin{frame}
 
-\frametitle{Context Generation}
+\frametitle{Theory}
 \framesubtitle{Basics}
 
 The goal of \textbf{context generation} and \textbf{contextual bandit algorithms} is to employ a (partially) disaggregated approach in order to better exploit the differences of the users that belong to different classes.
@@ -506,8 +506,8 @@ Each context is able to target a set of features, and a \textbf{context structur
 
 \begin{frame}
 
-\frametitle{Context Generation}
-\framesubtitle{Implementation challenges}
+\frametitle{Implementation challenges}
+\framesubtitle{Weaknesses}
 
 Context generation has been, by far, the \textit{toughest} task that we faced on this whole project.
 
@@ -521,7 +521,7 @@ In the end, our final results for this step were \textbf{unsatisfactory} and the
 
 \begin{frame}
 
-\frametitle{Context Generation}
+\frametitle{Implementation assumptions}
 \framesubtitle{Compromises}
 
 Given the difficulties that we encountered, we decided to make some compromises in order to still carry out the task to an end:
@@ -543,8 +543,8 @@ Given the difficulties that we encountered, we decided to make some compromises 
 
 \begin{frame}
 
-\frametitle{Context Generation}
-\framesubtitle{Generation}
+\frametitle{Context generation}
+\framesubtitle{Greedy algorithm}
 
 We generate contexts following a \textbf{greedy algorithm} that, given a context $c$:
 
@@ -561,7 +561,7 @@ We generate contexts following a \textbf{greedy algorithm} that, given a context
 
 \begin{frame}
 
-\frametitle{Context Generation}
+\frametitle{Context generation}
 \framesubtitle{Split condition}
 
 Since utilizing multiple contexts is an expensive operation and our \textit{greedy algorithm} is \textbf{not} guranteed to find the optimal solution, we want to be sure that when we introuduce new contexts, it is actually worth to do so.
@@ -580,8 +580,7 @@ We use a particular \textit{splitting condition} that exploits lower bounds in o
 
 \begin{frame}
 
-\frametitle{Context Generation}
-\framesubtitle{Utilization}
+\frametitle{Context utilization}
 
 Once a certain number of contexts has been established, a \textbf{Contextual Learner} will be able to assign an \textbf{Alphaless Learner} to each context and obtain their raw predictions by utilizing the function \textbf{predict\_raw} (which returns an un-optimized array of predictions) and then running the optimization algorithm on all the predictions gathered this way.
 
@@ -597,8 +596,8 @@ The resulting \textit{superarm} is then passed to the \textbf{Simulation} which,
 
 \begin{frame}
 
-\frametitle{Context Generation}
-\framesubtitle{Results}
+\frametitle{Results}
+\framesubtitle{}
 
 \todo{Insert results}
 
