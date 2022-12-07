@@ -501,9 +501,8 @@ After having collected the realization of the reward of the chosen arm, the uppe
 The main peculiarity combining gaussian process with UCB1 is that is possible to take advantage of the GP's confidence interval and modeling it as a confidence bound.
 
 \begin{lstlisting}[style=Python, basicstyle=\tiny, numbers=none, framexrightmargin=-20pt]
-
-    def estimation(self):
-    upper_bounds = (self.means + self.confidence * 1.96 * self.sigmas)
+def estimation(self):
+upper_bounds = (self.means + self.confidence * 1.96 * self.sigmas)
                  * self.normalize_factor
 return upper_bounds
 
@@ -527,9 +526,27 @@ where $\Delta_a$ is the difference in expected reward between the optimal arm $a
 \frametitle{General Approach}
 \framesubtitle{TS formulation}
 
-\todo{fix edges(probably no need code slide before)}
+Some aspect are similar to the UCB1 since both belong to the bandit algorithm the main difference is that here to every arm is associated a prior distribution.
+Every arm has a prior on its expected value based on his mean distribution.
+After drawing a sample according to the corresponding prior distribution, the algorithm choose the arm with the best sample (optimism in the face of uncertainty).
+Then it updates the distribution of the chosen arm according the observed realization
 
+\end{frame}
 
+% ----------------------------------------
+
+\begin{frame}[fragile]
+
+\frametitle{General Approach}
+\framesubtitle{TS formulation}
+
+The implementation of the Gaussian Process combining Tomphson Sampling algorithm is used to fit and estimate a function using a gaussian process and normal distributions
+The theoretical regret given by this kind of algorithm is buonded by:
+\begin{displaymath}
+  %  P(TS) \le (1+\epsilon) \sum_{a:\mu_a < \mu_a^*} \frac{\Delta_a(log(T)+log(log(T)))}{K*\Lambda(mu_a*,mu_a)} + C (\epsilon, \mu_a1 , ... , \mu_a_\left|A\right|)  
+\end{displaymath}
+where $K*\Lambda(mu_a*,mu_a)$ is the Kullback-Leibler divergence and as before $\Delta_a$ is defiened as the difference in expected reward between the optimal arm $a^*$ and the arm $a$
+\todo{non capisco dove sia l'errore nella formula}
 \end{frame}
 
 % ----------------------------------------
@@ -555,7 +572,6 @@ This, aside from theoretical formulations, will help us to define upper bounds a
 In particular the Clayrvoiant Learner learn and predict on complete dataset available, de facto solving the optimization problem as at each time while the "stupid" one always subdivides equally the budget between products and
 doesn't update its prediction.
 
-\todo{briefly explain what is the stupid learner can i cancel this one?}
 \todo{this two slides repeat a lot without adding much, we need to move this part in the Introduction and merge this with the slide that already talks about this. i agree i was actually thinking this all sub section could ahve be placed somewhere in the Introduction or after the optimization problem}
 \end{frame}
 
@@ -570,11 +586,9 @@ doesn't update its prediction.
 \frametitle{Uncertain $\alpha$-functions}
 \framesubtitle{Scenario}
 
-We now assume that the binary features of the users cannot be observed and therefore user data is aggregated.
-
-Since the features of the users are \textbf{not observable}, the algorithm receives all the interactions minus the class data.
-
-\todo{are you sure that this is right? We cannot observe the class parameters, not the class itself. What is unknown here is the shape of the alpha function!}
+We now assume that the binary features of the users cannot be observed and therefore user are aggregated by class.
+Since the features of the users are \textbf{not observable}, the alpha functions' shape of each class is unknown. 
+the algorithm receives all the interactions minus the parameters of the alpha fucntions.
 
 \end{frame}
 
@@ -590,25 +604,93 @@ Since the features of the users are \textbf{not observable}, the algorithm recei
 \framesubtitle{Algorithm}
 
 \todo{how do we solve the problem}
+First of all through the Masked Environment the Learner receive only the appropriate set of data.
+Our Alphaless Learner creates 5 different GP-Learner one for each product which exploit the TS and UCB1 algorithm seen before.
 \todo{how the algorithm works}
-\todo{code snippet (if needed)}
+They learn and predict on the aggregated budget matrix and try to find the optimal allocation of the budget.
+It is also adapted, if need, to have a sliding window in order to better perform in a varing environment.
 
 \end{frame}
 
 % ----------------------------------------
 
+\subsection{Results}
+
+%-----------------------------------------
+
 \begin{frame}
 
 \frametitle{Uncertain $\alpha$-functions}
-\framesubtitle{Result}
-
+\framesubtitle{Results}
+\todo{code snippet (if needed)}
 \todo{insert some graph of performance vs clayrvoiant vs stupid}
 
 \end{frame}
 
+%-------------------------------------------
+
+\AtBeginSection[]
+{
+\begin{frame}{}
+    \tableofcontents[sections={\thesection}]
+\end{frame}
+}
+
 % Uncertain alpha functions and number of items sold ------------------------------------
 
-%\section{Uncertain $\alpha$-functions and number of items sold}
+\section{Uncertain $\alpha$-functions and number of items sold}
+
+%-----------------------------------------
+
+\subsection{Contextual hypotesis}
+
+%-----------------------------------------
+
+\begin{frame}
+
+\frametitle{Uncertain $\alpha$-functions and Units sold}
+\framesubtitle{Scenario}
+
+In this case the ecommerce doesn't register either the units sold of each products and the class parameters.
+The learner will receive aggregated data so it must work by estimating aggregated alpha functions and it estimates the reward given by every single product.
+
+\end{frame}
+
+%---------------------------------------------
+
+\subsection{Algorithm}
+
+%---------------------------------------------
+
+\begin{frame}
+
+\frametitle{Uncertain $\alpha$-functions and Units sold}
+\framesubtitle{Algorithm}
+
+This learner try to optimize from the list of interactions but recieve only the aggreagated data.
+so in order to work it estimate the list of values, corresponding to the earnings for each product given the knowledge obtained by the learner until now
+We separately consider all the aggregated interactions where users landed on a certain product, then compute the reward they generated.
+This way we obtain reward associated to a single campaign.
+ \todo{devo capire cose e riscrivere.}
+
+\end{frame}
+
+% ----------------------------------------
+
+\subsection{Results}
+
+%-----------------------------------------
+
+\begin{frame}
+
+    \frametitle{Uncertain $\alpha$-functions and Units sold}
+    \framesubtitle{Results}
+
+    \todo{insert performance graph}
+
+\end{frame}
+
+% ----------------------------------------
 
 % Uncertain graph weights ---------------------------------------------------------------
 
