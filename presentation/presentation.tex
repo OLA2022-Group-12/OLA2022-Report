@@ -498,7 +498,7 @@ As per specifications, we will only consider \textbf{abrupt changes} in the scop
 
 \textbf{Abrupt changes} are usually experienced when an important event strikes the market \textit{(e.g. a new product that shifts the interests of the users is released or an historical event shapes the opionion of people)}; change isn't necessarily bad, however, it may impact negatively the prediction of learners that were created with a static environment in mind.
 
-Since neither \textbf{UCB1} nor \textbf{TS} account for abrupt changes since it's almost impossible for them to try a superarm that was deemed as \textit{unoptimal} over the past iterations (while it might have become optimal after an \textit{abrupt change}), we expect to see a significant \textbf{reward drop} from them after an \textit{abrupt change}.
+Neither \textbf{UCB1} nor \textbf{TS} account for abrupt changes since it's almost impossible for them to try a superarm that was deemed as \textit{unoptimal} over the past iterations (while it might have become optimal after an \textit{abrupt change}), therefore we expect to see a significant \textbf{reward drop} from them after an \textit{abrupt change}.
 
 \end{frame}
 
@@ -594,7 +594,31 @@ Formally:
 \frametitle{}
 \framesubtitle{}
 
-\todo{TODO}
+\todo{insert correct image}
+%\makebox[\textwidth]{\includegraphics[width=\paperwidth]{img/step6/image1.png}}
+
+\scriptsize Graphs representing reward and regret in the non-stationary environment with different approaches. (Only \textbf{UCB1} algorithms were evaluated)
+
+\end{frame}
+
+% ----------------------------------------
+
+\begin{frame}
+\frametitle{Reward and regret}
+
+We calculated the mean \textbf{reward} and \textbf{regret} considering their variance over multiple runs.
+
+\todo{insert image}
+%\makebox[\textwidth]{\includegraphics[width=\paperwidth]{img/step6/image2.png}}
+
+\end{frame}
+
+% ----------------------------------------
+
+\begin{frame}
+\frametitle{Theoretical guarantees}
+
+In addition, if the \textbf{number of breakpoints} $m$ is small enough with respect to the \textbf{time horizon} $T$ to the power of $\alpha$ we have that the \textbf{regret} is of the order $O\left( \vert A \vert T^{\frac{1+\alpha}{2}} \right)$
 
 \end{frame}
 
