@@ -17,9 +17,10 @@
 %\usepackage[T1]{fontenc}
 %\usepackage{pythontex}
 \usepackage{verbatim}
+\usepackage{amsmath}
 
 % Custom colors
-\definecolor{AnnotationGreen}{RGB}{34, 128, 45}
+\definecolor{AnnotationPurple}{RGB}{103, 13, 173}
 \definecolor{CommentGreen}{RGB}{29, 204, 49}
 
 % Python code formatting
@@ -33,7 +34,7 @@
     stringstyle = \textcolor{orange},
     showstringspaces = false,
     keywordstyle = \textcolor{blue},
-    moredelim = [is][\textcolor{AnnotationGreen}]{\\@}{@@\/},   % Annotations
+    moredelim = [is][\textcolor{AnnotationPurple}]{\\@}{@@\/},   % Annotations
     numberstyle = \scriptsize\ttfamily\textcolor{gray},
     numbers = left,
     frame = single,
@@ -145,6 +146,11 @@
 \section{Non-stationary demand curve}
 
 % ----------------------------------------
+
+% Uncertain alpha functions and number of items sold ------------------------------------
+
+\section{Uncertain $\alpha$-functions and number of items sold}
+
 
 \input{sections/non_stationary.tex}
 
