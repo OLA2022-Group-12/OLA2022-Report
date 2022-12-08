@@ -17,9 +17,10 @@
 %\usepackage[T1]{fontenc}
 %\usepackage{pythontex}
 \usepackage{verbatim}
+\usepackage{amsmath}
 
 % Custom colors
-\definecolor{AnnotationGreen}{RGB}{34, 128, 45}
+\definecolor{AnnotationPurple}{RGB}{103, 13, 173}
 \definecolor{CommentGreen}{RGB}{29, 204, 49}
 
 % Python code formatting
@@ -33,7 +34,7 @@
     stringstyle = \textcolor{orange},
     showstringspaces = false,
     keywordstyle = \textcolor{blue},
-    moredelim = [is][\textcolor{AnnotationGreen}]{\\@}{@@\/},   % Annotations
+    moredelim = [is][\textcolor{AnnotationPurple}]{\\@}{@@\/},   % Annotations
     numberstyle = \scriptsize\ttfamily\textcolor{gray},
     numbers = left,
     frame = single,
@@ -46,7 +47,6 @@
 \usepackage{todonotes}
 \presetkeys{todonotes}{inline}{}
 \usepackage{blindtext}
-%\usepackage{amsmath} %math packages dunno if is the best.
 % HELPER PACKAGES (TODO: REMOVE IN FINAL) %
 
 \usetheme{Copenhagen} % THEME
@@ -249,7 +249,7 @@ In particular their upper bound represents the maximum expected number of intera
 \todo{alpha functions aren't sigmoidal! we changed to the exponential function - correct and move to a new slide maybe}
 %Since the $\alpha$-functions we had choosen belong to the sigmoidal class we need these additional parameters.
 %\begin{figure}[⟨r⟩]
-%\includegraphics[height=3.8cm]{img/Graphs/exponential.png}
+%\includegraphics[height=3.8cm]{img/Graphs/sigmoid.png}
 %\end{figure}
 
 \end{frame}
@@ -410,15 +410,17 @@ F=\max_{\substack{x_i\in B}} \sum_{i=0}^n \alpha_i(x_i)p_i-x_i \ s.t. \sum_{i=0}
 
 % ----------------------------------------
 
+\todo{This entire subsection will be relocated in the introduction after merging}
+
 \begin{frame}
 
-\frametitle{Uncertain $\alpha$-functions}
-\framesubtitle{General Approach}
+\frametitle{Learner interface}
+\framesubtitle{Description}
 
-In order for our project to have a more general outline, we decided to model a generic Learner interface to standardize how our agents should be expected to behave while learning the budget distribution for a set of subcampaigns in a specific scenario defined by the environment.
+In order for our project to have a more general outline, we decided to model a \textbf{generic learner interface} to standardize how our agents should be expected to behave while learning the budget distribution for a set of subcampaigns in a specific scenario defined by the environment.
 
-In particular, each Learner is characterized by the \textit{learn} and \textit{predict} actions.
-Every different type of learner will also receive a customized set of information filtered by the masked enviroment (in line with each project step) and potentially employs different algorithms to learn and predict the various budgets.
+In particular, each learner is characterized by the \textit{learn} and \textit{predict} actions.
+Every different type of learner will also receive a customized set of information filtered by the \textit{masked environment} (in line with each project step) and potentially employs different algorithms to learn and predict the various budgets.
 
 \end{frame}
 
@@ -426,96 +428,50 @@ Every different type of learner will also receive a customized set of informatio
 
 \begin{frame}[fragile]
 
-\frametitle{Uncertain $\alpha$-functions}
-\framesubtitle{General Approach}
+\frametitle{Learner interface}
+\framesubtitle{Code}
 
-%
 %Arguments: interactions: the interactions of the users which led to the given reward reward: the reward obtained from the environment based on the prediction given, needed for the tuning of internal properties done by the learner
 %prediction: array containing the previous budget evaluation of the learner
 %
 %Arguments: data: up-to-date, complete or incomplete environment information that is used by the learner in order to make the inference
 %Returns: a tuple containing a list of values (corresponding to the budgets inferred given the knowledge obtained by the learner until now) and a list of features (referring to which particular customers were the budgets aimed for, if None, the budgets apply to all the customers)
 
-
-
 \begin{lstlisting}[style=Python, basicstyle=\tiny, numbers=none, framexrightmargin=-20pt]
 class Learner(ABC):
 
-#Updates the learner's properties according to the reward received.
-@abstractmethod
-def     learn(self, interactions: List[Interaction], reward: float,
-             prediction: np.ndarray):
- pass
+  # Updates the learner's properties according to the reward received.
+  \@@abstractmethod@@/
+  def learn(self, interactions: List[Interaction], reward: float,
+            prediction: np.ndarray):
+    pass
 
- #Makes an inference about the values of the budgets for the subcampaigns
- #from the information got over time and the current environment
+  # Makes an inference about the values of the budgets for the subcampaigns
+  # from the information got over time and the current environment
+  \@@abstractmethod@@/
+  def predict(self, data: MaskedEnvironmentData) ->
+              Tuple[np.ndarray, Optional[List[List[Feature]]]]:
+    pass
 
-@abstractmethod 
-def     predict(self, data: MaskedEnvironmentData) -> 
-        Tuple[np.ndarray, Optional[List[List[Feature]]]]: 
-pass
-
-#Creates a figure and plots showing the status of learning progress
-@abstractmethod 
-def     show_progress(self, fig: plt.Figure):
-pass
-    
-\end{lstlisting}
-
-\end{frame}
-
-% ----------------------------------------
-
-\begin{frame}
-
-\frametitle{Uncertain $\alpha$-functions}
-\framesubtitle{General Approach}
-
-Both Thompson Sampling (TS) and Upper Confidence Bound (UCB, in particular UCB1), in conjunction with Gaussian Processes are the algorithms chosen for the learners to use.
-
-\todo{insert TS formulations}
-
-\end{frame}
-
-% ----------------------------------------
-
-\begin{frame}
-
-\frametitle{General Approach}
-\framesubtitle{UCB1 formulation}
-
-In this algorithm, every arm is associated with an upper confidence bound which provides an estimation of the reward provided by playing that arm.
-Then, after have played all arms to have an indication of thier reward, at every trial the arm, with the highest upper confidence bound, is picked (optimism in the face of uncertainty).
-After having collected the realization of the reward of the chosen arm, the upper confidence bound is updated.
-
-
-\end{frame}
-
-% ----------------------------------------
-
-\begin{frame} [fragile]
-
-\frametitle{General Approach}
-\framesubtitle{UCB1 formulation}
-
-The main peculiarity combining gaussian process with UCB1 is that is possible to take advantage of the GP's confidence interval and modeling it as a confidence bound.
-
-\begin{lstlisting}[style=Python, basicstyle=\tiny, numbers=none, framexrightmargin=-20pt]
-def estimation(self):
-upper_bounds = (self.means + self.confidence * 1.96 * self.sigmas)
-                 * self.normalize_factor
-return upper_bounds
+  # Creates a figure and plots showing the status of learning progress
+  \@@abstractmethod@@/
+  def show_progress(self, fig: plt.Figure):
+    pass
 
 \end{lstlisting}
 
-The theoretical regret given by this kind of algorithm is buonded by:
+\end{frame}
 
-\begin{displaymath}
-  P(UCB1) \le  \sum_{a:\mu_a < \mu_a^*} \frac{4log(T)}{\Delta_a} + 8\Delta_a 
-\end{displaymath}
-where $\Delta_a$ is the difference in expected reward between the optimal arm $a^*$ and the arm $a$
+% ----------------------------------------
 
-\todo{fix edges(probably no need code)}
+\begin{frame}
+
+\frametitle{Comparing results}
+
+For each different learner, when possible, we will show our results through the comparison of the rewards obtained by each algorithm against the rewards achieved (in the same enviroment setting) from the \textbf{Clairvoyant learner} and the Stupid learner.
+This, aside from theoretical formulations, will help us to define \textbf{upper bounds} and \textbf{lower bounds} for different solutions.
+
+In particular, the \textbf{Clairvoyant learner} makes its "prediction" with full knowledge of the problem while the stupid learner always subdivides \textit{equally} the budget between products.
 
 \end{frame}
 
@@ -523,13 +479,47 @@ where $\Delta_a$ is the difference in expected reward between the optimal arm $a
 
 \begin{frame}
 
-\frametitle{General Approach}
-\framesubtitle{TS formulation}
+\frametitle{Comparing results}
+\framesubtitle{Clairvoyant learner}
 
-Some aspect are similar to the UCB1 since both belong to the bandit algorithm the main difference is that here to every arm is associated a prior distribution.
-Every arm has a prior on its expected value based on his mean distribution.
-After drawing a sample according to the corresponding prior distribution, the algorithm choose the arm with the best sample (optimism in the face of uncertainty).
-Then it updates the distribution of the chosen arm according the observed realization
+\todo{Our implementation for the clairvoyant learner - also mention non determinism and blueprint system}
+
+\end{frame}
+
+% ----------------------------------------
+
+\begin{frame}
+
+\frametitle{Comparing results}
+\framesubtitle{Regret}
+
+\todo{General regret formulation: see slides 1-05 and 1-06}
+
+\end{frame}
+
+% ----------------------------------------
+
+\begin{frame}
+
+\frametitle{Gaussian processes}
+
+\todo{GP description: see slides 3-05}
+
+\end{frame}
+
+% ----------------------------------------
+
+\begin{frame}
+
+\frametitle{UCB1 formulation}
+\framesubtitle{Outline}
+
+In the \textbf{UCB1} algorithm, every \textit{arm} is associated with an \textbf{upper confidence bound} which provides an \textit{estimation} of the reward gained by playing that specific arm.
+
+When each arm has been played at least once in order to have a baseline for its reward, at every trial, the arm with the \textbf{highest upper confidence bound} is pulled (\textit{optimism in the face of uncertainty}).
+After having collected the realization of the reward for the chosen arm, its \textit{upper confidence bound} is updated accordingly.
+
+The main advantage of combining \textbf{gaussian processes} with \textbf{UCB1} is that, in this way it's possible to take advantage of the \textbf{GP}'s \textit{confidence interval} by modeling it as a \textbf{confidence bound}.
 
 \end{frame}
 
@@ -537,28 +527,25 @@ Then it updates the distribution of the chosen arm according the observed realiz
 
 \begin{frame}[fragile]
 
-\frametitle{General Approach}
-\framesubtitle{TS formulation}
+\frametitle{UCB1 formulation}
+\framesubtitle{Formalities}
 
-The implementation of the Gaussian Process combining Tomphson Sampling algorithm is used to fit and estimate a function using a gaussian process and normal distributions
-The theoretical regret given by this kind of algorithm is buonded by:
+Code snippet that calculates the \textbf{upper bound}:
+
+\begin{lstlisting}[style=Python, basicstyle=\tiny, numbers=none, framexrightmargin=-20pt]
+def estimation(self):
+  upper_bounds = (self.means + self.confidence * 1.96 * self.sigmas)
+                   * self.normalize_factor
+  return upper_bounds
+\end{lstlisting}
+
+The \textit{theoretical regret} given by this kind of algorithm is bounded by:
+
 \begin{displaymath}
-  %  P(TS) \le (1+\epsilon) \sum_{a:\mu_a < \mu_a^*} \frac{\Delta_a(log(T)+log(log(T)))}{K*\Lambda(mu_a*,mu_a)} + C (\epsilon, \mu_a1 , ... , \mu_a_\left|A\right|)  
+R(UCB1) \le \sum_{a:\mu_a < \mu_a^*} \frac{4log(T)}{\Delta_a} + 8\Delta_a
 \end{displaymath}
-where $K*\Lambda(mu_a*,mu_a)$ is the Kullback-Leibler divergence and as before $\Delta_a$ is defiened as the difference in expected reward between the optimal arm $a^*$ and the arm $a$
-\todo{non capisco dove sia l'errore nella formula}
-\end{frame}
 
-% ----------------------------------------
-
-\begin{frame}
-
-\frametitle{General Approach}
-\framesubtitle{Comparing results}
-
-For each different learner, when possible, we will show our results through the comparison of the rewards obtained by each algorithm against the rewards achieved (in the same enviroment setting) from the Clairvoyant learner and the Stupid learner.
-This, aside from theoretical formulations, will help us to define upper bounds and lower bounds for different solutions.
-
+where $\Delta_a$ is the difference in expected reward between the \\ optimal arm $a^*$ and the arm $a$: $\Delta_a = \mu_a^* - \mu_a$
 
 \end{frame}
 
@@ -566,13 +553,33 @@ This, aside from theoretical formulations, will help us to define upper bounds a
 
 \begin{frame}
 
-\frametitle{General Approach}
-\framesubtitle{Comparing results}
+\frametitle{TS formulation}
+\framesubtitle{Outline}
 
-In particular the Clayrvoiant Learner learn and predict on complete dataset available, de facto solving the optimization problem as at each time while the "stupid" one always subdivides equally the budget between products and
-doesn't update its prediction.
+Some aspects of \textbf{TS} are similar to the \textbf{UCB1} since both are bandit algorithms, the main difference is that in \textbf{TS} every arm is associated to a $prior \beta distribution$.
 
-\todo{this two slides repeat a lot without adding much, we need to move this part in the Introduction and merge this with the slide that already talks about this. i agree i was actually thinking this all sub section could ahve be placed somewhere in the Introduction or after the optimization problem}
+Every arm has a prior on its \textbf{expected value} based on its mean distribution.
+After drawing a sample according to the corresponding prior distribution, the algorithm chooses the arm with the \textbf{best sample}, then, it updates the distribution of the chosen arm according the observed realization.
+
+Both \textbf{Thompson Sampling} (\textbf{TS}) and \textbf{Upper Confidence Bound} (\textbf{UCB}, in particular \textbf{UCB1}), in conjunction with \textbf{Gaussian Processes} are the base algorithms chosen for the learners in our project.
+
+\end{frame}
+
+% ----------------------------------------
+
+\begin{frame}[fragile]
+
+\frametitle{TS formulation}
+\framesubtitle{Formalities}
+
+The \textit{theoretical regret} given by this kind of algorithm is bounded by:
+
+\begin{displaymath}
+R(TS) \le (1+\epsilon) \sum_{a:\mu_a < \mu_a^*} \frac{\Delta_a(log(T)+log(log(T)))}{K*\Lambda(\mu_a*, \mu_a)} + C (\epsilon, \mu_{a_1} , ... , \mu_{a_{\left|A\right|}})
+\end{displaymath}
+
+where $K*\Lambda(mu_a*,mu_a)$ is the \textbf{Kullback-Leibler divergence} and, as before, $\Delta_a$ is defiened as the difference in expected reward between the optimal arm $a^*$ and the arm $a$: $\Delta_a = \mu_a^* - \mu_a$
+
 \end{frame}
 
 %----------------------------------------
@@ -583,12 +590,13 @@ doesn't update its prediction.
 
 \begin{frame}
 
-\frametitle{Uncertain $\alpha$-functions}
-\framesubtitle{Scenario}
+\frametitle{Scenario}
 
-We now assume that the binary features of the users cannot be observed and therefore user are aggregated by class.
-Since the features of the users are \textbf{not observable}, the alpha functions' shape of each class is unknown. 
-the algorithm receives all the interactions minus the parameters of the alpha fucntions.
+We now assume that the binary features of the users cannot be observed and therefore data is considered as \textbf{aggregated}.
+
+Since the features of the users are \textbf{not observable}, the $\alpha$ functions' shape for each class is unknown.
+
+As a result, in our scenario the learner receives all the interactions minus the parameters of the $\alpha$ functions.
 
 \end{frame}
 
@@ -600,15 +608,22 @@ the algorithm receives all the interactions minus the parameters of the alpha fu
 
 \begin{frame}
 
-\frametitle{Uncertain $\alpha$-functions}
-\framesubtitle{Algorithm}
+\frametitle{Solving the problem}
 
 \todo{how do we solve the problem}
-First of all through the Masked Environment the Learner receive only the appropriate set of data.
-Our Alphaless Learner creates 5 different GP-Learner one for each product which exploit the TS and UCB1 algorithm seen before.
-\todo{how the algorithm works}
+
+\end{frame}
+
+% ----------------------------------------
+
+\begin{frame}
+
+\frametitle{Algorithm outline}
+
+Our \textbf{Alphaless Learner} creates 5 different \textbf{GP-MABs} (one for each product) with $n_budget_steps$ number of arms.
 They learn and predict on the aggregated budget matrix and try to find the optimal allocation of the budget.
-It is also adapted, if need, to have a sliding window in order to better perform in a varing environment.
+
+\todo{how the algorithm works}
 
 \end{frame}
 
@@ -616,18 +631,18 @@ It is also adapted, if need, to have a sliding window in order to better perform
 
 \subsection{Results}
 
-%-----------------------------------------
+% ----------------------------------------
 
 \begin{frame}
 
-\frametitle{Uncertain $\alpha$-functions}
-\framesubtitle{Results}
-\todo{code snippet (if needed)}
-\todo{insert some graph of performance vs clayrvoiant vs stupid}
+\frametitle{}
+\framesubtitle{}
+
+\todo{results}
 
 \end{frame}
 
-%-------------------------------------------
+% ------------------------------------------
 
 \AtBeginSection[]
 {
@@ -648,11 +663,11 @@ It is also adapted, if need, to have a sliding window in order to better perform
 
 \begin{frame}
 
-\frametitle{Uncertain $\alpha$-functions and Units sold}
-\framesubtitle{Scenario}
+\frametitle{Scenario}
 
-In this case the ecommerce doesn't register either the units sold of each products and the class parameters.
-The learner will receive aggregated data so it must work by estimating aggregated alpha functions and it estimates the reward given by every single product.
+In this case the e-commerce website doesn't register neither the \textbf{units sold} for each product nor the \textbf{class parameters}.
+
+\todo{expand}
 
 \end{frame}
 
@@ -664,14 +679,14 @@ The learner will receive aggregated data so it must work by estimating aggregate
 
 \begin{frame}
 
-\frametitle{Uncertain $\alpha$-functions and Units sold}
-\framesubtitle{Algorithm}
+\frametitle{Algorithm}
+\framesubtitle{Algorithm outline}
 
-This learner try to optimize from the list of interactions but recieve only the aggreagated data.
 so in order to work it estimate the list of values, corresponding to the earnings for each product given the knowledge obtained by the learner until now
 We separately consider all the aggregated interactions where users landed on a certain product, then compute the reward they generated.
 This way we obtain reward associated to a single campaign.
- \todo{devo capire cose e riscrivere.}
+
+\todo{expand and correct}
 
 \end{frame}
 
@@ -683,10 +698,10 @@ This way we obtain reward associated to a single campaign.
 
 \begin{frame}
 
-    \frametitle{Uncertain $\alpha$-functions and Units sold}
-    \framesubtitle{Results}
+\frametitle{Results}
+\framesubtitle{}
 
-    \todo{insert performance graph}
+\todo{results}
 
 \end{frame}
 
