@@ -9,11 +9,12 @@
 \frametitle{Problem formulation}
 
 The purpose of the \textbf{optimization algorithm} is to find the \textit{optimal budget} for each campaign in order to maximize the \textit{profit}, which is defined as the difference between the profits gained from selling products and the advertisement expenses.
+
 Basically, it is a maximization problem subject to an obvious constraint: the sum of the daily budget can't be greater then the overall budget.
 
 The optimization problem can be expressed as follows:
 \begin{displaymath}
-F=\max_{\substack{x_i\in B}} \sum_{i=0}^n \alpha_i(x_i)p_i-x_i \ s.t. \sum_{i=0}^n x_i\leq B
+	F=\max_{\substack{x_i\in B}} \sum_{i=0}^n \alpha_i(x_i)p_i-x_i ~\text{  s.t.  } \sum_{i=0}^n x_i\leq B
 \end{displaymath}
 
 \end{frame}
@@ -29,18 +30,89 @@ F=\max_{\substack{x_i\in B}} \sum_{i=0}^n \alpha_i(x_i)p_i-x_i \ s.t. \sum_{i=0}
 \frametitle{Code}
 \framesubtitle{Functioning}
 
-\todo{talking about the code in words}
+\vspace*{-1em}
+
+Given a \textbf{budget assignment problem} over the matrix $c$, which is assumed to be divided into $n$ rows (campaigns) and $m$ columns (budget fractions from 0 to $B$ \textit{maximum budget}).
+
+We solve this problem via \textbf{DP} and we start by setting up \textbf{two extra tables} to store the \textit{best values} and their \textit{relative allocations}, then we iterate over each row and column finding the best index for each cell by taking into consideration the sum between the current and the previous row matching budgets; we store the best values and their indexes in the corresponding tables.
+
+The optimal allocation lies at the end of the of the updated table, however, in order to obtain a final allocation which fully utilizes the whole budget we trace back the best values table \textbf{greedily} adding sub-optimal allocations until our budget runs out.
 
 \end{frame}
 
 % ----------------------------------------
 
-\begin{frame}
+\begin{frame}[fragile]
 
 \frametitle{Code}
 \framesubtitle{Example}
 
-\todo{snippets of code}
+\begin{lstlisting}[style=Python, basicstyle=\tiny, numbers=none, framexrightmargin=-20pt]
+dp = [c[0]]
+allocs = [np.arange(m)]
+
+for i in range(1, n):
+	next_dp_row = []
+	next_alloc_row = []
+	for j in range(m):
+		prev_row_r = dp[i - 1][j::-1]
+		curr_row = c[i][: j + 1]
+
+		row_sum = prev_row_r + curr_row
+
+		# The best index is the index which we should select for
+		# the maximum profit, it will be what we store in
+		# allocation, and we will also store the value of the
+		# row_sum at best_index to dp[i][j]
+		best_index = np.argmax(row_sum)
+
+		next_alloc_row.append(best_index)
+		next_dp_row.append(row_sum[best_index])
+
+	allocs.append(np.array(next_alloc_row))
+	dp.append(np.array(next_dp_row))
+
+dp = np.array(dp)
+allocs = np.array(allocs)
+# ...
+\end{lstlisting}
+
+\end{frame}
+
+% ----------------------------------------
+
+\begin{frame}[fragile]
+
+\frametitle{Code}
+\framesubtitle{Example}
+
+\begin{lstlisting}[style=Python, basicstyle=\tiny, numbers=none, framexrightmargin=-20pt]
+# ...
+best_dp_index = np.argmax(dp[-1])
+
+# As we stored the allocation of what the dp would mean, we now need to
+# trace back through the allocs array to create the final allocation
+last_alloc = allocs[-1][best_dp_index]
+
+final_allocs = [last_alloc]
+remaining_budget = m - last_alloc
+
+for i in range(n - 2, -1, -1):
+	# Based on the remaining_budget, we take the max of the remaining
+	# possible cumulative values that we have in the dynamic
+	# programming table
+	sub_dp = dp[i, :remaining_budget]
+	sub_best_index = np.argmax(sub_dp) if len(sub_dp) > 0 else 0
+
+	next_alloc = allocs[i][sub_best_index]
+	final_allocs.append(next_alloc)
+
+	remaining_budget = remaining_budget - next_alloc
+
+# As we constructed the the final allocation from the back to front,
+# we need to reverse it before returning it
+return np.array(list(reversed(final_allocs)))
+\end{lstlisting}
 
 \end{frame}
 

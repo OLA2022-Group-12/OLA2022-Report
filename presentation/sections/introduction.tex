@@ -27,6 +27,7 @@ The main general hypoteses that were given to us are:
     \item For every \textit{primary product}, the \textit{secondary products} to display and their order is fixed.
     \item The price of every product is fixed and it is equal to the margin.
     \item By clicking on a specific ad, the user lands on the corresponding \textit{primary product}.
+    \item No bidding optimization needs to be performed.
 \end{itemize}
 
 \end{frame}
@@ -96,7 +97,9 @@ class Learner(ABC):
 For each different learner, when possible, we will show our results through the comparison of the rewards obtained by each algorithm against the rewards achieved (in the same enviroment setting) from the \textbf{Clairvoyant learner} and the Stupid learner.
 This, aside from theoretical formulations, will help us to define \textbf{upper bounds} and \textbf{lower bounds} for different solutions.
 
-In particular, the \textbf{Clairvoyant learner} makes its "prediction" with full knowledge of the problem while the stupid learner always subdivides \textit{equally} the budget between products.
+The \textit{Stupid Learner} always subdivides the budget \textit{equally} between products.
+
+In particular, the \textbf{Clairvoyant learner} makes its "prediction" with full knowledge of the problem by identifying the \textbf{optimal superarm} (which corresponds to the optimal assigment of budgets) and placing it in a deterministic environment to collect an estimate of the best rewards achievable.
 
 \end{frame}
 
@@ -107,7 +110,10 @@ In particular, the \textbf{Clairvoyant learner} makes its "prediction" with full
 \frametitle{Comparing results}
 \framesubtitle{Clairvoyant learner}
 
-\todo{Our implementation for the clairvoyant learner - also mention non determinism and blueprint system}
+To estimate the \textbf{optimal superarm} we compute the \textbf{reward multipliers} (how much profit a single product brings on average) through hypotetical deterministic graph walks, performed by group of users following the expected values of the distributions defined on the graph edges.
+In addition, to remove any \textbf{non-determinism}, $\alpha$-values are applied directly without any \textit{Dirichlet noise} applied to them.
+
+Given this definition of \textbf{clairvoyant reward} it may happen that, during simulation runs, the \textit{learer reward} surpasses the \textit{clairvoyant reward}; this is an expected and negligible behavior caused by the absence of noise in the clairvoyant formulation.
 
 \end{frame}
 
@@ -118,7 +124,13 @@ In particular, the \textbf{Clairvoyant learner} makes its "prediction" with full
 \frametitle{Comparing results}
 \framesubtitle{Regret}
 
-\todo{General regret formulation: see slides 1-05 and 1-06}
+In order to evaluate the performance of our learers against the \textit{clairvoyant result} we use the \textbf{cumulated regret} formulation:
+
+\begin{displaymath}
+    R_T(L) := T\mu_{a^*} - \sum_{t = 1}^T \mu_{a_t}
+\end{displaymath}
+
+Usually we consider averaged results between multiple runs in order to reduce variance in the outcomes.
 
 \end{frame}
 
@@ -128,7 +140,36 @@ In particular, the \textbf{Clairvoyant learner} makes its "prediction" with full
 
 \frametitle{Gaussian processes}
 
-\todo{GP description: see slides 3-05}
+\textbf{Gaussian Processes} (\textbf{GPs}) are a powerful tool to tackle regression problems: by defining a \textbf{kernel} with its parameters and feeding the GP with the arms pulled by the bandit and their rewards it's possible to obtain a probability distribution over the outcome in form of arrays of \textbf{means} and \textbf{sigmas}.
+
+Different bandit algorithms use those values in different ways as the \textbf{GPUCB} uses them to build a confidence bound and \textbf{GPTS} uses them directly to output estimations.
+
+Each \textbf{GP} has been instantiated with the kernel: $Ck(\theta) * RBF(\ell)$ where $Ck$ is the $\theta$-constant kernel and $RBF$ is the \textit{Radial Basis Function} kernel of length $\ell$, defined as:
+\begin{displaymath}
+exp \left( - \frac{ \lVert x - x' \rVert^2 }{ 2\ell^2} \right)
+\end{displaymath}
+
+\end{frame}
+
+% ----------------------------------------
+
+\begin{frame}
+
+\frametitle{Gaussian processes}
+\framesubtitle{Regret}
+
+\vspace*{-3em}
+
+\begin{displaymath}
+    R_T \le \sqrt{ \frac{2\Lambda^2}{log(1+\frac{1}{\sigma^2})} CBT \sum_{k=1}^C \gamma_{k, T} } \text{ with probability of } 1 - \delta
+\end{displaymath}
+where:
+\begin{displaymath}
+    B = 8log\left( 2\frac{T^2MC}{\delta} \right)
+\end{displaymath}
+
+In our case $C=5$ (number of subcampaigns), $\delta=?$ (regret bound confidence), $\gamma_{k, T}=? ~\forall k \text{ subcampaigns}$ (information gain at $T$), $\Lambda=?$ (Lipschitz constant of the problem), $M=?$ (number of arms) and $\sigma=?$ (maximum variance of the GP).
+
 
 \end{frame}
 
@@ -143,8 +184,6 @@ In the \textbf{UCB1} algorithm, every \textit{arm} is associated with an \textbf
 
 When each arm has been played at least once in order to have a baseline for its reward, at every trial, the arm with the \textbf{highest upper confidence bound} is pulled (\textit{optimism in the face of uncertainty}).
 After having collected the realization of the reward for the chosen arm, its \textit{upper confidence bound} is updated accordingly.
-
-The main advantage of combining \textbf{gaussian processes} with \textbf{UCB1} is that, in this way it's possible to take advantage of the \textbf{GP}'s \textit{confidence interval} by modeling it as a \textbf{confidence bound}.
 
 \end{frame}
 
@@ -164,10 +203,12 @@ def estimation(self):
   return upper_bounds
 \end{lstlisting}
 
+\todo{GPUCB and remove Theoretical regret}
+
 The \textit{theoretical regret} given by this kind of algorithm is bounded by:
 
 \begin{displaymath}
-R(UCB1) \le \sum_{a:\mu_a < \mu_a^*} \frac{4log(T)}{\Delta_a} + 8\Delta_a
+    R_T(UCB1) \le \sum_{a:\mu_a < \mu_a^*} \frac{4log(T)}{\Delta_a} + 8\Delta_a
 \end{displaymath}
 
 where $\Delta_a$ is the difference in expected reward between the \\ optimal arm $a^*$ and the arm $a$: $\Delta_a = \mu_a^* - \mu_a$
@@ -186,8 +227,6 @@ Some aspects of \textbf{TS} are similar to the \textbf{UCB1} since both are band
 Every arm has a prior on its \textbf{expected value} based on its mean distribution.
 After drawing a sample according to the corresponding prior distribution, the algorithm chooses the arm with the \textbf{best sample}, then, it updates the distribution of the chosen arm according the observed realization.
 
-Both \textbf{Thompson Sampling} (\textbf{TS}) and \textbf{Upper Confidence Bound} (\textbf{UCB}, in particular \textbf{UCB1}), in conjunction with \textbf{Gaussian Processes} are the base algorithms chosen for the learners in our project.
-
 \end{frame}
 
 % ----------------------------------------
@@ -197,10 +236,12 @@ Both \textbf{Thompson Sampling} (\textbf{TS}) and \textbf{Upper Confidence Bound
 \frametitle{TS formulation}
 \framesubtitle{Formalities}
 
+\todo{GPTS and remove Theoretical regret}
+
 The \textit{theoretical regret} given by this kind of algorithm is bounded by:
 
 \begin{displaymath}
-R(TS) \le (1+\epsilon) \sum_{a:\mu_a < \mu_a^*} \frac{\Delta_a(log(T)+log(log(T)))}{K*\Lambda(\mu_a*, \mu_a)} + C (\epsilon, \mu_{a_1} , ... , \mu_{a_{\left|A\right|}})
+    R_T(TS) \le (1+\epsilon) \sum_{a:\mu_a < \mu_a^*} \frac{\Delta_a(log(T)+log(log(T)))}{K*\Lambda(\mu_a*, \mu_a)} + C (\epsilon, \mu_{a_1} , ... , \mu_{a_{\left|A\right|}})
 \end{displaymath}
 
 where $K*\Lambda(mu_a*,mu_a)$ is the \textbf{Kullback-Leibler divergence} and, as before, $\Delta_a$ is defiened as the difference in expected reward between the optimal arm $a^*$ and the arm $a$: $\Delta_a = \mu_a^* - \mu_a$

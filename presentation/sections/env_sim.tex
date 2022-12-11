@@ -29,13 +29,10 @@ In particular we want to underline the following assumptions for the e-commerce 
 ...and we assume that the users present the following behaviors:
 \begin{itemize}[label={-}]
     \item Every day, there is a random number (subject to noise) of potential new users.
-    \item The \textit{reservation price} for each user is always over the single unit. \todo{?}
-    \item The users can activate parallel paths while on the website.
-    \item The number of items that a user will buy is a random variable, independent from any other variable.
+    \item The users can activate \textbf{parallel paths} while on the website.
+    \item The number of items that a user will buy is a random variable, independent from any other variable; but every user that lands on the page of a product will buy at least 1 unit of it if it's under their \textbf{reservation price}.
+    \item The behavior of users can be modelled as a graph where \textit{nodes} represent product pages and \textit{weights} represent the probabilities for a user to click from the primary item of the page to one of the secondaries.
 \end{itemize}
-
-\todo{insert text somewhere}
-%The behavior of a user is modelled as a graph where nodes represent product pages and weights represent the probabilities for the user to click from the primary item of the page to one of the secondaries.
 
 \end{frame}
 
@@ -137,11 +134,11 @@ In particular their \textit{upper bound} represents the maximum expected number 
 \frametitle{Users}
 \framesubtitle{User classes}
 
-\begin{itemize}[leftmargin=*, label={$\circ$}]
-    \item Users are subdivided in classes based on their \textit{2 binary features} for a total of \textit{3 different classes}.
-    \item In particular, each user class is defined by its $\alpha$-functions (one for each product plus the one for the non-strategic competitor) which define the probability of landing on a given product page.
-    \item Each $\alpha$-function is defined by the values: \textbf{reservation price}, \textbf{upper bound} and \textbf{maximum useful budget}
-\end{itemize}
+Users are subdivided in classes based on their \textit{2 binary features} for a total of \textit{3 different classes}.
+
+In particular, each user class is defined by its $\alpha$-functions (one for each product plus the one for the non-strategic competitor) which define the probability of landing on a given product page.
+
+Each $\alpha$-function is defined by the values: \textbf{reservation price}, \textbf{upper bound} and \textbf{maximum useful budget}
 
 \end{frame}
 
@@ -156,10 +153,9 @@ In particular their \textit{upper bound} represents the maximum expected number 
 \frametitle{Randomness in the Environment}
 \framesubtitle{Non determinism}
 
-\begin{itemize}[leftmargin=*, label={$\circ$}]
-    \item For the sake of representing a real scenario, most of the values that are not known a priori are \textit{randomly generated} and every variable that evolves through time without our direct control has elements of randomness to it (for instance, each day we randomly get the number of active total users in our scenario by using a gaussian distribution with tunable mean and standard deviation).
-    \item Even though most of the randomness is tunable and controlled through seeded generators, there are still \textbf{impactful elements of non determinism} (i.e. the Dirichlet distribution) that are not possible to control in any way.
-\end{itemize}
+For the sake of representing a real scenario, most of the values that are not known a priori are \textit{randomly generated} and every variable that evolves through time without our direct control has elements of randomness to it (for instance, each day we randomly get the number of active total users in our scenario by using a gaussian distribution with tunable mean and standard deviation).
+
+Even though most of the randomness is tunable and controlled through seeded generators, there are still \textbf{impactful elements of non determinism} (i.e. the Dirichlet distribution) that are not possible to control in any way.
 
 \end{frame}
 
@@ -174,11 +170,11 @@ In particular their \textit{upper bound} represents the maximum expected number 
 \frametitle{Daily Simulation}
 \framesubtitle{Purpose}
 
-\begin{itemize}[leftmargin=*, label={$\circ$}]
-    \item The \textbf{Simulation} class is the main engine that brings together \textit{learners} and \textit{environment} by making them interact with each other while offering an interface to customize the execution.
-    \item The basic idea of the simulation is to simulate a real scenario day by day using the environment to generate interactions with the website according to the budgets that the current learner proposed and then, feed the results back to the learner to make it actually learn.
-    \item Repeating the simulation execution step for each day until an arbitrary \textbf{time horizon} is reached grants us all the data needed to evaluate the performance of our learner.
-\end{itemize}
+The \textbf{Simulation} class is the main engine that brings together \textit{learners} and \textit{environment} by making them interact with each other while offering an interface to customize the execution.
+
+The basic idea of the simulation is to simulate a real scenario day by day using the environment to generate interactions with the website according to the budgets that the current learner proposed and then, feed the results back to the learner to make it actually learn.
+
+Repeating the simulation execution step for each day until an arbitrary \textbf{time horizon} is reached grants us all the data needed to evaluate the performance of our learner.
 
 \end{frame}
 
@@ -189,7 +185,13 @@ In particular their \textit{upper bound} represents the maximum expected number 
 \frametitle{Daily Simulation}
 \framesubtitle{Example}
 
-\todo{insert generic learner execution plot over n days}
+\scriptsize
+Simulation runs of two learners with having an environment with total\_budget = 400 and population\_mean = 1000
+
+\begin{center}
+    \includegraphics[scale=0.5]{img/Graphs/env_sim/image1.png}
+\end{center}
+
 
 \end{frame}
 
