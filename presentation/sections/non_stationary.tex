@@ -72,26 +72,13 @@ It's clear that \textbf{Sliding window} approaches are more fit for \textbf{smoo
 \framesubtitle{Sliding window for TS and UCB}
 
 \begin{itemize}[leftmargin=*, label={$\circ$}]
-    \item \textbf{SW-UCB} differs in the confidence bound formulation and the new arm choice:
+    \item \textbf{SW-GPTS} only differs in the \textbf{gaussian process} update since the older samples are progressively removed from the estimation as time goes on.
+    \item \textbf{SW-GPUCB} also differs in the confidence bound formulation and the new arm choice:
         \begin{displaymath}
             a_t =
             \begin{cases}
-                a_{\overline{t}} & \text{if} ~ \exists \overline{t} \vert n_{a_{\overline{t}}}(t-1, \tau) = 0 \\
-                arg\max\limits_{a \in A} \left\{ \overline{x}_{a, t, \tau} + \sqrt{\frac{2log(t)}{n_a(t-1, \tau)}} \right\} & \text{otherwise}
-            \end{cases}
-        \end{displaymath}
-    \item \textbf{SW-TS} differs in the $\beta$ distribution update:
-        \begin{displaymath}
-            \displayindent0pt \displaywidth\textwidth
-            (\alpha_{a_t}, \beta_{a_t}) =
-            \begin{cases}
-                (\alpha_{a_t}, \beta_{a_t}) + (x_{a_t, t}, 1-x_{a_t, t}) & \text{if} ~ t \leq \tau \\[1ex]
-                \!\begin{aligned}
-                    & \max \{ (1, 1)\!\begin{aligned}[t]
-                        & , (\alpha_{a_t}, \beta_{a_t}) + (x_{a_t, t}, 1-x_{a_t, t}) \\
-                        & - (x_{a_{t-\tau}, t-\tau}, 1-x_{a_{t-\tau}, t-\tau}) \}
-                    \!\end{aligned}
-                \end{aligned} & \text{if} ~ t > \tau
+                a_{\overline{t}} & \text{if} ~ \exists \overline{t} ~ | ~ n_{a_{\overline{t}}}(t-1, \tau) = 0 \\
+                arg\max_{a \in A} \left\{ \mu_{t-1, \tau} + \delta \sigma_{t-1, \tau} \right\} & \text{otherwise}
             \end{cases}
         \end{displaymath}
 \end{itemize}
