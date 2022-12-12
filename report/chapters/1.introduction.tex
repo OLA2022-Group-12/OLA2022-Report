@@ -14,6 +14,8 @@ Every day, customers can land on the primary pages of the various products or on
 
 The website is in need of advertising its own products and has a predetermined \textit{budget} to spend in order to boost the probability of possible customers landing on a page owned by the website.
 
+The focus of this project is to optimize the budget allocated for the \textbf{advertisement campaigns} of the 5 products in order to maximize the profit of the website.
+
 \section{Hypoteses}
 \label{sec:intro_hypoteses}
 
@@ -24,13 +26,15 @@ This does not include specific hypoteses and assumptions that are strictly relat
 \begin{itemize}
     \item The customer effectively buys products only at the end of their visit to the website.
     \item A user buys an arbitrary amount of products of a certain type if the price of a single unit of product is strictly under their \textit{reservation price}.
+    \item The number of items that a user will buy is a random variable, independent from any other variable; but every user that lands on the page of a product will buy at least 1 unit of it if it's under their \textbf{reservation price}.
     \item The website offers an infinite number of units for each product and a can customer buy an arbitrary number of them.
     \item A single user won't open two times the same web page containing the same product during a visit to the website.
     \item All of the actions performed by the users are perfectly observable by the e-commerce website.
+    \item Every day, there is a random number (subject to noise) of potential new users.
+    \item The users can activate \textbf{parallel paths} while on the website.
+    \item The behavior of users can be modelled as a graph where \textit{nodes} represent product pages and \textit{weights} represent the probabilities for a user to click from the primary item of the page to one of the secondaries.
     \item Every \textit{primary product} has a \textbf{fixed} pair of \textit{secondary products} that will be displayed in the modalities discussed above.
     \item The price of every product is \textbf{fixed} and equal to the margin.
     \item There is an \textit{advertising campaign} for each product (5 in total), and clicking on an ad brings the user to the web page containing the advertised \textit{primary product}.
-    \item \textit{Bidding optimization} is outside the scope of the project.
+    \item \textit{Bidding optimization} is outside the scope of the project and is not performed.
 \end{itemize}
-
-\todo{add our additional hypoteses}
