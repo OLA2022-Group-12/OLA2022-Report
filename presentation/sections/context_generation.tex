@@ -19,17 +19,6 @@ Each context is able to target a set of features, and a \textbf{context structur
 
 %-----------------------------------------
 
-\begin{frame}
-
-\frametitle{Context Generation}
-\framesubtitle{}
-
-\todo{todo}
-
-\end{frame}
-
-%-----------------------------------------
-
 \subsection{Assumptions}
 
 %-----------------------------------------
@@ -60,8 +49,22 @@ Given the difficulties that we encountered, we decided to make some compromises 
     \item The e-commerce website company owns a simulation capable of simulating interactions.
     \item Learners are trained on the fake simulation since we can't get enough information from the logs.
     \item The best expected reward for a given context is considered as the maximum reward experienced by a learner on a fake simulation run.
-    \item We used the Hoeffding bound to calculate lower bounds for both the probability and the best expected reward for the contexts
 \end{itemize}
+
+\end{frame}
+
+%-----------------------------------------
+
+\begin{frame}
+
+\frametitle{Implementation assumptions}
+\framesubtitle{Potential problems}
+
+Given our interpretation, some quantities were particularly difficult to identify in a correct manner, especially the \textbf{expected value $\mu$ of the optimal arm $a^*$ for a context $c$} (written as $\mu_c$) that we resorted to calculate as the mean reward over a fake simulation on the context $c$.
+
+Additionaly we used the \textbf{Hoeffding bound} to compute lower bounds for both the \textit{context probability} and the \textit{context expected value}.
+
+These particular points are critical parts that absolutely need to be revisioned and most definetly are concurring causes to the unsatisfactory results.
 
 \end{frame}
 
@@ -73,14 +76,28 @@ Given the difficulties that we encountered, we decided to make some compromises 
 
 \begin{frame}
 
-\frametitle{Context generation}
-\framesubtitle{Greedy algorithm}
+\frametitle{Greedy algorithm}
+\framesubtitle{Part 1}
 
 We generate contexts following a \textbf{greedy algorithm} that, given a context $c$:
 
 \begin{itemize}[label={*}]
     \item Considers all the possible binary 1-feature splits $\{c_i^0$, $c_i^1\}_n$ for the features not present in $c$.
     \item Creates and evaluates a new learner for each split $c_i^j$, obtaining the \textbf{context probability} $p_i^j$ and the \textbf{best expected reward} $\mu_i^j$.
+    \item ...
+\end{itemize}
+
+\end{frame}
+
+%-----------------------------------------
+
+\begin{frame}
+
+\frametitle{Greedy algorithm}
+\framesubtitle{Part 2}
+
+\begin{itemize}[label={*}]
+    \item ...
     \item Evaluates the \textbf{splitting condition} on each couple of splits $(c_i^0$, $c_i^1)$ w.r.t the original context $c$ while deciding which split is the best one (if it exists).
     \item If a split has been made, repeat all the operations recursively on the new contexts until \textit{no split is made} or \textit{no split is possible}.
 \end{itemize}
@@ -103,6 +120,8 @@ We use a particular \textit{splitting condition} that exploits lower bounds in o
         \underline{p}_i^0 \underline{\mu}_i^0 + \underline{p}_i^1 \underline{\mu}_i^1 \geq \underline{\mu}_i
     \end{displaymath}
 \end{Large}
+
+for context $i$ defined by a binary feature split on 0 and 1.
 
 \end{frame}
 
