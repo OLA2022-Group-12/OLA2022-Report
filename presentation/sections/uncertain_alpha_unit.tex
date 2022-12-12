@@ -10,7 +10,9 @@
 
 In this case the e-commerce website doesn't register neither the \textbf{units sold} for each product nor the \textbf{class parameters}.
 
-\todo{expand}
+Since this isn't a change that affects the enviroment directly, there will not be a separate \textbf{masked environment} mask to hide the \textit{units sold} to the learner, therefore the extra information will be ignored by the learner.
+
+We expect worse results overall since the learners are working with less data and therefore their prediction will have to factor in more \textbf{uncertainty}.
 
 \end{frame}
 
@@ -20,16 +22,23 @@ In this case the e-commerce website doesn't register neither the \textbf{units s
 
 % ----------------------------------------
 
-\begin{frame}
+\begin{frame}[fragile]
 
 \frametitle{Algorithm}
 \framesubtitle{Algorithm outline}
 
-so in order to work it estimate the list of values, corresponding to the earnings for each product given the knowledge obtained by the learner until now
-We separately consider all the aggregated interactions where users landed on a certain product, then compute the reward they generated.
-This way we obtain reward associated to a single campaign.
+The learner that we modelled for this specific scenario bares a lot of \textit{similarities} w.r.t. the learner used for the previous step they both function following the same workflow.
 
-\todo{expand and correct}
+However, in this case, the \textbf{learn} function is only allowed to gather information from the generic reward obtained for the day.
+
+\vspace*{1em}
+
+\begin{lstlisting}[style=Python, basicstyle=\tiny, numbers=none]
+def learn(self, _, reward: float, prediction: np.ndarray):
+	for i, p in enumerate(prediction):
+		prediction_index = np.where(self.budget_steps == p)[0][0]
+		self.product_mabs[i].update(prediction_index, reward)
+\end{lstlisting}
 
 \end{frame}
 
@@ -92,7 +101,7 @@ This way we obtain reward associated to a single campaign.
 \end{center}
 
 \begin{displaymath}
-	\text{Regret ratio } = \frac{\text{Avg regret}}{\text{Upper bound}} = \frac{31019.4}{?} = ?
+	\text{Regret ratio } = \frac{\text{Avg regret}}{\text{Upper bound}} = \frac{97205.53}{?} = ?
 \end{displaymath}
 
 \scriptsize Values reference GPTS regret compared to advertising GP regret found at [SLIDE REFERENCE]

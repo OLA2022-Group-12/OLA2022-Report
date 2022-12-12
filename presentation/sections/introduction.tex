@@ -170,6 +170,7 @@ where:
 
 In our case $C=5$ (number of subcampaigns), $\delta=?$ (regret bound confidence), $\gamma_{k, T}=? ~\forall k \text{ subcampaigns}$ (information gain at $T$), $\Lambda=?$ (Lipschitz constant of the problem), $M=?$ (number of arms) and $\sigma=?$ (maximum variance of the GP).
 
+\todo{variable values}
 
 \end{frame}
 
@@ -177,74 +178,15 @@ In our case $C=5$ (number of subcampaigns), $\delta=?$ (regret bound confidence)
 
 \begin{frame}
 
-\frametitle{UCB1 formulation}
-\framesubtitle{Outline}
+\frametitle{MAB algorithms}
+\framesubtitle{TS and UCB}
 
-In the \textbf{UCB1} algorithm, every \textit{arm} is associated with an \textbf{upper confidence bound} which provides an \textit{estimation} of the reward gained by playing that specific arm.
+\vspace*{-0.5em}
+To tackle most of the problems in this project we will use two main \textbf{MAB} algorithms called \textbf{Thompson sampling} (\textbf{TS}) and \textbf{Upper Confidence Bound 1} (\textbf{UCB1}).
 
-When each arm has been played at least once in order to have a baseline for its reward, at every trial, the arm with the \textbf{highest upper confidence bound} is pulled (\textit{optimism in the face of uncertainty}).
-After having collected the realization of the reward for the chosen arm, its \textit{upper confidence bound} is updated accordingly.
+In the \textbf{UCB1} algorithm, every \textit{arm} is associated with an \textbf{upper confidence bound} which provides an \textit{estimation} of the reward gained by playing that specific arm, at every trial, the arm with the \textbf{highest upper confidence bound} is pulled and the bound is updated accordingly.
 
-\end{frame}
-
-% ----------------------------------------
-
-\begin{frame}[fragile]
-
-\frametitle{UCB1 formulation}
-\framesubtitle{Formalities}
-
-Code snippet that calculates the \textbf{upper bound}:
-
-\begin{lstlisting}[style=Python, basicstyle=\tiny, numbers=none, framexrightmargin=-20pt]
-def estimation(self):
-  upper_bounds = (self.means + self.confidence * 1.96 * self.sigmas)
-                   * self.normalize_factor
-  return upper_bounds
-\end{lstlisting}
-
-\todo{GPUCB and remove Theoretical regret}
-
-The \textit{theoretical regret} given by this kind of algorithm is bounded by:
-
-\begin{displaymath}
-    R_T(UCB1) \le \sum_{a:\mu_a < \mu_a^*} \frac{4log(T)}{\Delta_a} + 8\Delta_a
-\end{displaymath}
-
-where $\Delta_a$ is the difference in expected reward between the \\ optimal arm $a^*$ and the arm $a$: $\Delta_a = \mu_a^* - \mu_a$
-
-\end{frame}
-
-% ----------------------------------------
-
-\begin{frame}
-
-\frametitle{TS formulation}
-\framesubtitle{Outline}
-
-Some aspects of \textbf{TS} are similar to the \textbf{UCB1} since both are bandit algorithms, the main difference is that in \textbf{TS} every arm is associated to a $prior \beta distribution$.
-
-Every arm has a prior on its \textbf{expected value} based on its mean distribution.
-After drawing a sample according to the corresponding prior distribution, the algorithm chooses the arm with the \textbf{best sample}, then, it updates the distribution of the chosen arm according the observed realization.
-
-\end{frame}
-
-% ----------------------------------------
-
-\begin{frame}[fragile]
-
-\frametitle{TS formulation}
-\framesubtitle{Formalities}
-
-\todo{GPTS and remove Theoretical regret}
-
-The \textit{theoretical regret} given by this kind of algorithm is bounded by:
-
-\begin{displaymath}
-    R_T(TS) \le (1+\epsilon) \sum_{a:\mu_a < \mu_a^*} \frac{\Delta_a(log(T)+log(log(T)))}{K*\Lambda(\mu_a*, \mu_a)} + C (\epsilon, \mu_{a_1} , ... , \mu_{a_{\left|A\right|}})
-\end{displaymath}
-
-where $K*\Lambda(mu_a*,mu_a)$ is the \textbf{Kullback-Leibler divergence} and, as before, $\Delta_a$ is defiened as the difference in expected reward between the optimal arm $a^*$ and the arm $a$: $\Delta_a = \mu_a^* - \mu_a$
+Some aspects of \textbf{TS} are similar to \textbf{UCB1} but the main difference is that in \textbf{TS} every arm is associated to a $prior \beta distribution$ and every arm has a prior on its \textbf{expected value} based on it; at every trial the algorithm chooses the arm with the \textbf{best sample}, then, it updates the distribution of the chosen arm according to the observed realization.
 
 \end{frame}
 

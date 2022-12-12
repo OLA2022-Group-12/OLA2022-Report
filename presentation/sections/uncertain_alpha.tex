@@ -26,7 +26,11 @@ As a result, in our scenario the learner receives all the interactions minus the
 
 \frametitle{Solving the problem}
 
-\todo{how do we solve the problem}
+By gathering the aggregated reward for each product we are able to utilize those coarse rewards to generate feedbacks for our \textbf{MABs} and therefore train them on the aggregated interactions for each day.
+
+In particular we exploit \textbf{Gaussian Processes} in conjunction with \textbf{MAB} algorithms such as \textbf{Thompson Sampling} and \textbf{UCB1} to exloit the continuity between the different arms
+
+We instantiate a \textbf{GP-MAB} for each subcampaign and each \textbf{MAB} will have \texttt{n\_budget\_steps} number of arms.
 
 \end{frame}
 
@@ -34,12 +38,46 @@ As a result, in our scenario the learner receives all the interactions minus the
 
 \begin{frame}
 
-\frametitle{Algorithm outline}
+\frametitle{Algorithms outline}
+\framesubtitle{GP TS}
 
-Our \textbf{Alphaless Learner} creates 5 different \textbf{GP-MABs} (one for each product) with $n_budget_steps$ number of arms.
-They learn and predict on the aggregated budget matrix and try to find the optimal allocation of the budget.
+\textbf{GPTS} is a variant of \textbf{TS} implemented using \textbf{Gaussian Processes}:
 
-\todo{how the algorithm works}
+\begin{itemize}[label={$\circ$}]
+	\item For each day $t$, we gather a sample from each arm $a$:
+		\begin{displaymath}
+			\tilde{\theta_a} \leftarrow \text{ Sample} \left( \mathbb{P}(\mu_a = \theta_a) \right)
+		\end{displaymath}
+	\item Play arm $a_t$ defined as:
+		\begin{displaymath}
+			a_t \leftarrow arg\max_{a \in A} \left\{ \tilde{\theta_a} \right\}
+		\end{displaymath}
+	\item Update the \textbf{Gaussian Process} with the reward obtained.
+\end{itemize}
+
+\end{frame}
+
+% ----------------------------------------
+
+\begin{frame}[fragile]
+
+\frametitle{Algorithms outline}
+\framesubtitle{GP UCB1}
+
+\textbf{GPUCB1} is a variant of \textbf{UCB1} that takes advantage of the \textbf{Gaussian Processes} confidence interval and models it as the confidence bound; aprat from the arm choice, the learning process is equal to \textbf{GPTS}.
+
+\begin{displaymath}
+	a_t \leftarrow arg\max_{a \in A} \left\{ \mu_{t-1} + \delta \sigma_{t-1} \right\}
+\end{displaymath}
+
+Code snippet that calculates the \textbf{upper bound}:
+
+\begin{lstlisting}[style=Python, basicstyle=\tiny, numbers=none, xrightmargin=15px]
+def estimation(self):
+	upper_bounds = (self.means + self.confidence * 1.96 * self.sigmas)
+			* self.normalize_factor
+	return upper_bounds
+\end{lstlisting}
 
 \end{frame}
 
@@ -102,7 +140,7 @@ They learn and predict on the aggregated budget matrix and try to find the optim
 \end{center}
 
 \begin{displaymath}
-	\text{Regret ratio } = \frac{\text{Avg regret}}{\text{Upper bound}} = \frac{31019.4}{?} = ?
+	\text{Regret ratio } = \frac{\text{Avg regret}}{\text{Upper bound}} = \frac{31019.40}{?} = ?
 \end{displaymath}
 
 \scriptsize Values reference GPTS regret compared to advertising GP regret found at [SLIDE REFERENCE]
