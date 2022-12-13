@@ -1,2 +1,95 @@
 \chapter{Optimization with uncertain number of sold items}
 \label{chap:unc_items}
+
+\section{Contextual hypotesis}
+
+\subsection{Scenario}
+
+In this case the e-commerce website doesn't register neither the \textbf{units sold} for each product nor the \textbf{class parameters}.
+
+Since this isn't a change that affects the enviroment directly, there will not be a separate \textbf{masked environment} mask to hide the \textit{units sold} to the learner, therefore the extra information will be ignored by the learner.
+
+We expect worse results overall since the learners are working with less data and therefore their prediction will have to factor in more \textbf{uncertainty}.
+
+\section{Algorithm}
+
+\subsection{Algorithm outline}
+
+The learner that we modelled for this specific scenario bares a lot of \textit{similarities} w.r.t. the learner used for the previous step as they both function following the same workflow.
+
+However, in this case, the \textbf{learn} function is only allowed to gather information from the generic reward obtained for the day.
+
+\vspace*{1em}
+
+\begin{lstlisting}[style=Python, basicstyle=\tiny, numbers=none]
+def learn(self, _, reward: float, prediction: np.ndarray):
+	for i, p in enumerate(prediction):
+		prediction_index = np.where(self.budget_steps == p)[0][0]
+		self.product_mabs[i].update(prediction_index, reward)
+\end{lstlisting}
+
+\section{Results}
+
+\subsection{Single run reward and regret}
+
+Thompson Sampling and UCB
+
+\begin{center}
+	\includegraphics[scale=0.4]{img/Graphs/uncertain_alpha_unit/image1.png}
+	\includegraphics[scale=0.4]{img/Graphs/uncertain_alpha_unit/image2.png}
+\end{center}
+
+Regret comparison
+
+\begin{center}
+	\includegraphics[scale=0.5]{img/Graphs/uncertain_alpha_unit/image3.png}
+\end{center}
+
+\subsection{Average regret and reward}
+
+Thompson Sampling and UCB
+
+\begin{center}
+	\includegraphics[scale=0.4]{img/Graphs/uncertain_alpha_unit/image4.png}
+	\includegraphics[scale=0.4]{img/Graphs/uncertain_alpha_unit/image5.png}
+\end{center}
+
+Average regret comparison
+
+\begin{center}
+	\includegraphics[scale=0.45]{img/Graphs/uncertain_alpha_unit/image6.png}
+\end{center}
+
+\begin{displaymath}
+	\text{Regret ratio } = \frac{\text{Avg regret}}{\text{Upper bound}} = \frac{97205.53}{?} = ?
+\end{displaymath}
+
+{\scriptsize Values reference GPTS regret compared to advertising GP regret found at [SLIDE REFERENCE]}
+
+\todo{complete}
+
+\subsection{Conclusions}
+
+In this scenario, results are worse w.r.t. the previous step since the learners work with less information.
+
+\textbf{TS} seems to reach the optimal solution but is much more unstable than the previous case, however, if we use the \textbf{UCB} approach we are not guaranteed to find the optimal arm as sometimes it settles on a suboptimal solution.
+
+On average we can observe that \textbf{UCB} performs slightly better than \textbf{TS} probably due to a more unrealiable environment resulting in learners that are more "unsure" nullifying the advantage dictated by the randomness of the latter.
+
+Average results over 15 runs at time horizon $T = 50$:
+
+\begin{table}[h]
+	\begin{tabular}{|c|cc|c|}
+	\hline \hline
+		\cellcolor{blue!25} & Reward 	& Regret	& Deviation \\
+	\cline{2-4}
+		\cellcolor{blue!25} & $\mu$		& $\mu$		& $\sigma$	\\
+	\hline \hline
+		GPTS 				& 10772.60	& 97205.53	& 904.08	\\
+	\hline
+		GPUCB				& 11029.20	& 72557.20	& 510.36	\\
+	\hline \hline
+	\end{tabular}
+\end{table}
+
+\todo{adapt from import}
