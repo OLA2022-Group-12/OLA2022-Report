@@ -57,7 +57,7 @@ The environment is modelled as a python dataclass containing the following attri
     class_ratios: List[float]
 
     # Features associated to every class
-    class_features: List[List]
+    class_features: Dict[Tuple[Feature, Feature], int]
 
     # Price of the 5 products
     product_prices: List[float]
