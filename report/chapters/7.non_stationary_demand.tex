@@ -17,31 +17,29 @@ As per specifications, we will only consider \textbf{abrupt changes} in the scop
 
 \subsection{Abrupt changes}
 
-\textbf{Abrupt changes} are usually experienced when an important event strikes the market \textit{(e.g. a new product that shifts the interests of the users is released or an historical event shapes the opionion of people)}; change isn't necessarily bad, however, it may impact negatively the prediction of learners that were created with a static environment in mind.
+Abrupt changes are usually experienced when an important event strikes the market \textit{(e.g. a new product that shifts the interests of the users is released or an historical event shapes the opionion of people)}; change isn't necessarily bad, however, it may impact negatively the prediction of learners that were created with a static environment in mind.
 
-Neither \textbf{UCB} nor \textbf{TS} account for abrupt changes since it's almost impossible for them to try a superarm that was deemed as \textit{unoptimal} over the past iterations (while it might have become optimal after an \textit{abrupt change}), therefore we expect to see a significant \textbf{reward drop} from them after an \textit{abrupt change}.
+Neither UCB nor TS account for abrupt changes since it's almost impossible for them to try a superarm that was deemed as \textit{unoptimal} over the past iterations (while it might have become optimal after an abrupt change), therefore we expect to see a significant reward drop from them after an abrupt change.
 
-In the early stages of the project we noticed that the \textbf{Simulation} that we created wasn't really fit to dinamically include abrupt changes in the environment, therefore great effort was spent in completely reworking the interface for the \textbf{Simulation} from the ground-up.
-
-Besides collateral improvements in reproducibility, results collection and user-friendliness, the new \textbf{Simulation} allowed for an \textit{incremental simulation unfolding}, this meant that we were now able to simulate \textit{n} days, change the environment and simulate another \textit{n} days.
-
+In the early stages of the project we noticed that the simulation that we created wasn't really fit to dinamically include abrupt changes in the environment, therefore great effort was spent in completely reworking the interface for the simulation from the ground-up.
+Besides collateral improvements in reproducibility, results collection and user-friendliness, the new simulation allowed for an \textit{incremental simulation unfolding}, this meant that we were now able to simulate \textit{n} days, change the environment and simulate another \textit{n} days.
 This particular feature revealed itself as fundamental for the upcoming challenges.
 
 \section{Algorithms}
 
+There are 2 main approaches to deal with a non-stationary environment
 
-There are 2 main approaches to deal with a \textbf{non-stationary environment}
 \begin{itemize}
     \item \textbf{Sliding window}: only consider the last $\tau$ samples for predictions.
     \item \textbf{Change detection}: detect when a change has happened and adapt accordingly.
 \end{itemize}
 
-It's clear that \textbf{Sliding window} approaches are more fit for \textbf{smooth changes} while \textbf{Change detection} approaches work better with \textbf{abrupt changes}, however it's important to note that both approaches can be utilized to deal with any \textit{non-stationary} scenario.
+It's clear that sliding window approaches are more fit for smooth changes while change detection approaches work better with abrupt changes, however it's important to note that both approaches can be utilized to deal with any \textit{non-stationary} scenario.
 
 \subsection{Sliding window for TS and UCB}
 
 \begin{itemize}
-    \item \textbf{SW-GPTS} only differs in the \textbf{gaussian process} update since the older samples are progressively removed from the estimation as time goes on.
+    \item \textbf{SW-GPTS} only differs in the gaussian process update since the older samples are progressively removed from the estimation as time goes on.
     \item \textbf{SW-GPUCB} also differs in the confidence bound formulation and the new arm choice:
         \begin{displaymath}
             a_t =
@@ -54,7 +52,7 @@ It's clear that \textbf{Sliding window} approaches are more fit for \textbf{smoo
 
 \subsection{Change detection}
 
-We used a \textbf{reward-based algorithm} as a \textit{change detection algorithm}, it works by comparing the last $k$ rewards with the newest $k$ rewards ($k=4$ by default) and if the difference between their means exceedes a certain threshold $\omega$ ($\omega=400$ by default) the learner is \textbf{reset} and is therefore able to learn a new optimal superarm from scratch.
+We used a reward-based algorithm as a change detection algorithm, it works by comparing the last $k$ rewards with the newest $k$ rewards ($k=4$ by default) and if the difference between their means exceedes a certain threshold $\omega$ ($\omega=400$ by default) the learner is \textbf{reset} and is therefore able to learn a new optimal superarm from scratch.
 
 Formally:
 \begin{displaymath}
@@ -65,11 +63,8 @@ Formally:
 
 \section{Results}
 
-\subsection{-}
 \todo{insert results}
 
 \subsection{Theoretical guarantees}
 
-In addition, if the \textbf{number of breakpoints} $m$ is small enough with respect to the \textbf{time horizon} $T$ to the power of $\alpha$ we have that the \textbf{regret} is of the order $O\left( \vert A \vert T^{\frac{1+\alpha}{2}} \right)$
-
-\todo{adapt from import}
+In addition, if the number of breakpoints $m$ is small enough with respect to the \textbf{time horizon} $T$ to the power of $\alpha$ we have that the regret is of the order $O\left( \vert A \vert T^{\frac{1+\alpha}{2}} \right)$
