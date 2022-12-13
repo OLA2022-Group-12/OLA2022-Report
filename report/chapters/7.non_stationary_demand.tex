@@ -2,6 +2,7 @@
 \label{chap:ns_demand}
 
 \section{Environment behavior}
+\label{sec:ns_demand_env}
 
 \subsection{Overview}
 
@@ -26,6 +27,7 @@ Besides collateral improvements in reproducibility, results collection and user-
 This particular feature revealed itself as fundamental for the upcoming challenges.
 
 \section{Algorithms}
+\label{sec:ns_demand_alg}
 
 There are 2 main approaches to deal with a non-stationary environment
 
@@ -52,7 +54,7 @@ It's clear that sliding window approaches are more fit for smooth changes while 
 
 \subsection{Change detection}
 
-We used a reward-based algorithm as a change detection algorithm, it works by comparing the last $k$ rewards with the newest $k$ rewards ($k=4$ by default) and if the difference between their means exceedes a certain threshold $\omega$ ($\omega=400$ by default) the learner is \textbf{reset} and is therefore able to learn a new optimal superarm from scratch.
+We used a reward-based algorithm as a change detection algorithm, it works by comparing the last $k$ rewards with the newest $k$ rewards ($k=4$ by default) and if the difference between their means exceedes a certain threshold $\omega$ ($\omega=1000$ by default) the learner is \textbf{reset} and is therefore able to learn a new optimal superarm from scratch.
 
 Formally:
 \begin{displaymath}
@@ -62,9 +64,10 @@ Formally:
 {\scriptsize N.B. there is an offset of 1 in the representation of t between theory and code}
 
 \section{Results}
+\label{sec:ns_demand_res}
 
 \todo{insert results}
 
 \subsection{Theoretical guarantees}
 
-In addition, if the number of breakpoints $m$ is small enough with respect to the \textbf{time horizon} $T$ to the power of $\alpha$ we have that the regret is of the order $O\left( \vert A \vert T^{\frac{1+\alpha}{2}} \right)$
+In addition, if the number of breakpoints $m$ is small enough with respect to the \textbf{time horizon} $T$ to the power of $\alpha$ we have that the regret is of the order $O\left( \vert A \vert T^{\frac{1+\alpha}{2}} \right)$.

@@ -95,10 +95,9 @@ class EnvironmentData:
 
     The masked environment isn't strictly needed in the project since the learners could easily ignore the extra information, however, we wanted to face the problem with an approach aimed towards reusability and extendability and in this case (as in many others down the line) we opted for a more \textbf{generalizable} solution.
 
-    \item Modelling user interactions.
+    \item Modelling user interactions
 
     With the aid of the functions \textit{simulate\_interaction} and \textit{generate\_interactions} we can compute a single set of interactions starting from a page, returning a set of intermediate results called \texttt{blueprints} which can be used to generate actual interactions following the user behavior defined in section \hyperref[sec:intro_overview]{Overview}.
-
 
     \item Overall result of a day
 
@@ -108,7 +107,6 @@ class EnvironmentData:
 It is worth to note that the Environment isn't necessarily deterministic, in fact, for the sake of representing a real scenario, most of the values that are not known a priori are \textit{randomly generated} and every variable that evolves through time without our direct control has elements of randomness to it (for instance, each day we randomly get the number of active total users in our scenario by using a gaussian distribution with tunable mean and standard deviation).
 
 Even though most of the randomness is tunable and controlled through seeded generators, there are still \textbf{impactful elements of non determinism} (i.e. the Dirichlet distribution) that are not possible to control in any way.
-
 
 \subsection{Simulation}
 

@@ -2,6 +2,7 @@
 \label{chap:unc_items}
 
 \section{Contextual hypotesis}
+\label{sec:unc_it_hyp}
 
 In this case the e-commerce website doesn't register neither the units sold for each product nor the class parameters for the users.
 Since this isn't a change that affects the enviroment directly, there will not be a separate mask to hide the \textit{units sold} to the learner, therefore the extra information will just be ignored by the learner.
@@ -9,6 +10,7 @@ Since this isn't a change that affects the enviroment directly, there will not b
 We expect worse results overall since the learners are working with less data and therefore their prediction will have to factor in more uncertainty.
 
 \section{Algorithm}
+\label{sec:unc_it_alg}
 
 The learner that we modelled for this specific scenario bares a lot of \textit{similarities} w.r.t. the learner used for the previous step as they both function following the same workflow.
 
@@ -22,6 +24,7 @@ def learn(self, _, reward: float, prediction: np.ndarray):
 \end{lstlisting}
 
 \section{Results}
+\label{sec:unc_it_res}
 
 \subsection{Single run reward and regret}
 

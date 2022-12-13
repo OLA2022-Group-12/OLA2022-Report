@@ -2,6 +2,7 @@
 \label{chap:unc_alpha}
 
 \section{Contextual hypotesis}
+\label{sec:unc_a_hyp}
 
 We now assume that the binary features of the users cannot be observed and therefore data is considered as aggregated.
 
@@ -10,6 +11,7 @@ Since the features of the users are \textbf{not observable}, the $\alpha$ functi
 As a result, in our scenario the learner receives all the interactions minus the parameters of the $\alpha$ functions.
 
 \section{Algorithm}
+\label{sec:unc_a_alg}
 
 By gathering the aggregated reward for each product we are able to utilize those coarse rewards to generate feedbacks for our MABs and therefore train them on the aggregated interactions for each day.
 
@@ -70,6 +72,7 @@ def estimation(self):
 \end{lstlisting}
 
 \section{Results}
+\label{sec:unc_a_res}
 
 \subsection{Single run reward and regret}
 

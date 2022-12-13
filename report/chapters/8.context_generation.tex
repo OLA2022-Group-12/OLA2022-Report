@@ -2,12 +2,16 @@
 \label{chap:ctx_gen}
 
 \section{General Remarks}
+\label{sec:ctx_gen_remarks}
 
 The goal of \textbf{context generation} and contextual bandit algorithms is to employ a (partially) disaggregated approach in order to better exploit the differences of the users that belong to different classes.
 This is made possible by using a specialized Learner for each context and an \textit{offline context generation algorithm} that decides which contexts are worth to target by isolating them from the aggregated data.
+This algorithm is ran every two weeks.
+
 Each context is able to target a set of features, and a \textbf{context structure} is a set of contexts that targets all the existing features without any overlap.
 
 \section{Assumptions}
+\label{sec:ctx_gen_ass}
 
 \subsection{Implementation challenges}
 
@@ -30,6 +34,7 @@ Additionaly we used the Hoeffding Bound to compute lower bounds for both the \te
 These particular points are critical parts that absolutely need to be revisioned and most definetly are concurring causes to the unsatisfactory results.
 
 \section{Implementation}
+\label{sec:ctx_gen_imp}
 
 \subsection{Greedy algorithm}
 
@@ -83,6 +88,7 @@ def predict(self, _) -> Tuple[np.ndarray, Optional[List[List[Feature]]]]:
 \end{lstlisting}
 
 \section{Results}
+\label{sec:ctx_gen_res}
 
 \subsection{-}
 \todo{insert results}
