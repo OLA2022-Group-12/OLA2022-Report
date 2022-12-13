@@ -11,7 +11,7 @@
 
 The focus of this project is to optimize the budget allocated for the \textbf{advertisement campaigns} of 5 different items in order to maximize the profit of an \textit{e-commerce website} that sells products to the public.
 
-Each page has a \textbf{primary product} and some \textbf{secondary products}, each user that lands on a page has a possibility to buy the primary prodcut and/or proceed to one of the secondaries with a given probability, the process repeats.
+Each page has a \textbf{primary product} and some \textbf{secondary products}, each user that lands on a page has a possibility to buy the primary product and/or proceed to one of the secondaries with a given probability, the process repeats.
 
 \end{frame}
 
@@ -99,7 +99,7 @@ This, aside from theoretical formulations, will help us to define \textbf{upper 
 
 The \textit{Stupid Learner} always subdivides the budget \textit{equally} between products.
 
-In particular, the \textbf{Clairvoyant learner} makes its "prediction" with full knowledge of the problem by identifying the \textbf{optimal superarm} (which corresponds to the optimal assigment of budgets) and placing it in a deterministic environment to collect an estimate of the best rewards achievable.
+In particular, the \textbf{Clairvoyant learner} makes its "prediction" with full knowledge of the problem by identifying the \textbf{optimal superarm} (which corresponds to the optimal assigment of budgets) and placing it in a deterministic environment to collect \\ an estimate of the best rewards achievable.
 
 \end{frame}
 
@@ -113,7 +113,7 @@ In particular, the \textbf{Clairvoyant learner} makes its "prediction" with full
 To estimate the \textbf{optimal superarm} we compute the \textbf{reward multipliers} (how much profit a single product brings on average) through hypotetical deterministic graph walks, performed by group of users following the expected values of the distributions defined on the graph edges.
 In addition, to remove any \textbf{non-determinism}, $\alpha$-values are applied directly without any \textit{Dirichlet noise} applied to them.
 
-Given this definition of \textbf{clairvoyant reward} it may happen that, during simulation runs, the \textit{learer reward} surpasses the \textit{clairvoyant reward}; this is an expected and negligible behavior caused by the absence of noise in the clairvoyant formulation.
+Given this definition of \textbf{clairvoyant reward} it may happen that, during simulation runs, the \textit{learner reward} surpasses the \textit{clairvoyant reward}; this is an expected and negligible behavior caused by the absence of noise in the clairvoyant formulation.
 
 \end{frame}
 
@@ -124,7 +124,7 @@ Given this definition of \textbf{clairvoyant reward} it may happen that, during 
 \frametitle{Comparing results}
 \framesubtitle{Regret}
 
-In order to evaluate the performance of our learers against the \textit{clairvoyant result} we use the \textbf{cumulated regret} formulation:
+In order to evaluate the performance of our learners against the \textit{clairvoyant result} we use the \textbf{cumulated regret} formulation:
 
 \begin{displaymath}
     R_T(L) := T\mu_{a^*} - \sum_{t = 1}^T \mu_{a_t}
@@ -186,7 +186,7 @@ To tackle most of the problems in this project we will use two main \textbf{MAB}
 
 In the \textbf{UCB1} algorithm, every \textit{arm} is associated with an \textbf{upper confidence bound} which provides an \textit{estimation} of the reward gained by playing that specific arm, at every trial, the arm with the \textbf{highest upper confidence bound} is pulled and the bound is updated accordingly.
 
-Some aspects of \textbf{TS} are similar to \textbf{UCB1} but the main difference is that in \textbf{TS} every arm is associated to a $prior \beta distribution$ and every arm has a prior on its \textbf{expected value} based on it; at every trial the algorithm chooses the arm with the \textbf{best sample}, then, it updates the distribution of the chosen arm according to the observed realization.
+Some aspects of \textbf{TS} are similar to \textbf{UCB1} but the main difference is that in \textbf{TS} every arm is associated to a prior $\beta$ distribution and every arm has a prior on its \textbf{expected value} based on it; at every trial the algorithm chooses the arm with the \textbf{best sample}, then, it updates the distribution of the chosen arm according to the observed realization.
 
 \end{frame}
 

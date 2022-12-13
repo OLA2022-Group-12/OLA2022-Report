@@ -28,7 +28,7 @@ As a result, in our scenario the learner receives all the interactions minus the
 
 By gathering the aggregated reward for each product we are able to utilize those coarse rewards to generate feedbacks for our \textbf{MABs} and therefore train them on the aggregated interactions for each day.
 
-In particular we exploit \textbf{Gaussian Processes} in conjunction with \textbf{MAB} algorithms such as \textbf{Thompson Sampling} and \textbf{UCB1} to exloit the continuity between the different arms
+In particular we exploit \textbf{Gaussian Processes} in conjunction with \textbf{MAB} algorithms such as \textbf{Thompson Sampling} and \textbf{UCB1} to exploit the continuity between the different arms.
 
 We instantiate a \textbf{GP-MAB} for each subcampaign and each \textbf{MAB} will have \texttt{n\_budget\_steps} number of arms.
 
@@ -64,7 +64,7 @@ We instantiate a \textbf{GP-MAB} for each subcampaign and each \textbf{MAB} will
 \frametitle{Algorithms outline}
 \framesubtitle{GP UCB1}
 
-\textbf{GPUCB1} is a variant of \textbf{UCB1} that takes advantage of the \textbf{Gaussian Processes} confidence interval and models it as the confidence bound; aprat from the arm choice, the learning process is equal to \textbf{GPTS}.
+\textbf{GPUCB1} is a variant of \textbf{UCB1} that takes advantage of the \textbf{Gaussian Processes} confidence interval and models it as the confidence bound; apart from the arm choice, the learning process is equal to \textbf{GPTS}.
 
 \begin{displaymath}
 	a_t \leftarrow arg\max_{a \in A} \left\{ \mu_{t-1} + \delta \sigma_{t-1} \right\}
