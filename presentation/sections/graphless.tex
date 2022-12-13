@@ -25,6 +25,20 @@ Meanwhile, since the \textbf{$\alpha$-functions} are known, there is no need to 
 
 \begin{frame}
 
+\frametitle{Initial solution}
+
+In the first interpretation of this assignment we set out to exploit graph influencing techniques in order to tackle this problem, however, in the long run the results were \textbf{suboptimal} and we decided to opt for a different approach.
+
+Nonetheless, the graph influence related functions \textbf{still exist} in the codebase for posterity reasons, those are: \texttt{get\_influence\_per\_product}, \texttt{make\_influence\_graph} and \texttt{get\_influence\_of\_seed}.
+
+In the end we opted for a more \textit{experimental approach} by simulating the hypotethic behavior of a fixed set of people walking the graph, following our \textit{estimated weights} and observing which products resulted in more return; we were able to produce meaningful budget assigments and tune the estimated graph weights over time.
+
+\end{frame}
+
+% ----------------------------------------
+
+\begin{frame}
+
 \frametitle{Solving the problem}
 \framesubtitle{Prediction}
 
