@@ -42,6 +42,8 @@ This does not include specific hypoteses and assumptions that are strictly relat
 \section{Approach}
 \label{sec:intro_approach}
 
+\subsection{Learners}
+
 In order for our project to have a more general outline, we decided to model a \textbf{generic learner interface} to standardize how our agents should be expected to behave while learning the budget distribution for a set of subcampaigns in a specific scenario defined by the environment.
 
 In particular, each learner is characterized by the \texttt{learn} and \texttt{predict} actions.
@@ -101,3 +103,28 @@ class Learner(ABC):
         """
         pass
 \end{lstlisting}
+
+To tackle most of the problems in this project we will use two main MAB algorithms called Thompson sampling (TS) and Upper Confidence Bound 1 (UCB1).
+
+In the UCB1 algorithm, every \textit{arm} is associated with an \textit{upper confidence bound} which provides an \textit{estimation} of the reward gained by playing that specific arm, at every trial, the arm with the highest upper confidence bound is pulled and the bound is updated accordingly.
+
+Some aspects of TS are similar to UCB1 but the main difference is that in TS every arm is associated to a prior $\beta$ distribution and every arm has a prior on its expected value based on it; at every trial the algorithm chooses the arm with the best sample, then, it updates the distribution of the chosen arm according to the observed realization.
+
+\subsection{Regret}
+
+For each different learner, when possible, we will show our results through the comparison of the rewards obtained by each algorithm against the rewards achieved (in the same enviroment setting) from the Clairvoyant learner and the Stupid learner.
+This, aside from theoretical formulations, will help us to define upper bounds and lower bounds for different solutions.
+
+The \textit{Stupid Learner} always subdivides the budget \textit{equally} between products while, in particular, the \textit{Clairvoyant learner} makes its "prediction" with full knowledge of the problem by identifying the optimal superarm (which corresponds to the optimal assigment of budgets) and placing it in a deterministic environment to collect an estimate of the best rewards achievable.
+
+To estimate the optimal superarm we compute the reward multipliers (how much profit a single product brings on average) through hypotetical deterministic graph walks, performed by group of users following the expected values of the distributions defined on the graph edges.
+In addition, to remove any non-determinism, $\alpha$-values are applied directly without any \textit{Dirichlet noise} applied to them.
+Given this definition of clairvoyant reward it may happen that, during simulation runs, the \textit{learner reward} surpasses the \textit{clairvoyant reward}; this is an expected and negligible behavior caused by the absence of noise in the clairvoyant formulation.
+
+In order to evaluate the performance of our learners against the \textit{clairvoyant result} we use the \textbf{cumulated regret} formulation:
+
+\begin{displaymath}
+    R_T(L) := T\mu_{a^*} - \sum_{t = 1}^T \mu_{a_t}
+\end{displaymath}
+
+Usually we consider averaged results between multiple runs in order to reduce variance in the outcomes.

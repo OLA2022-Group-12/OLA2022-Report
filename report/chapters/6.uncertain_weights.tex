@@ -12,6 +12,15 @@ Meanwhile, since the $\alpha$-functions are known, there is no need to estimate 
 \section{Implementation}
 \label{sec:unc_w_impl}
 
+\subsection{Initial solution}
+
+In the first interpretation of this assignment we set out to exploit graph influencing techniques in order to tackle this problem, however, in the long run the results were suboptimal and we decided to opt for a different approach.
+
+Nonetheless, the graph influence related functions still exist in the codebase for posterity reasons, those are: \texttt{get\_influence\_per\_product}, \texttt{make\_influence\_graph} and \texttt{get\_influence\_of\_seed}.
+The rationale for our graph influencing approach was based on determining how much each product was valuable to invest budget in by following activation patterns on the estimation of our graph, which contained our approximate weights.
+
+In the end we opted for a more experimental approach that better exploited all of the information at our disposal in this particular step: by simulating the hypotethic behavior of a fixed set of people walking the graph, following our estimated weights and observing which products resulted in more return; we were able to produce meaningful budget assigments and tune the estimated graph weights over time following the behavior observed on real interactions.
+
 \subsection{Prediction}
 
 Since there is no need to estimate the $\alpha$-functions, the best allocation is calculated using the \texttt{find\_optimal\_superarm} function used to obtain the best estimation when the $\alpha$-functions are known.

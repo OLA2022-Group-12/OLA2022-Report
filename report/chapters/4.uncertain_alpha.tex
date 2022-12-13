@@ -18,6 +18,37 @@ By gathering the aggregated reward for each product we are able to utilize those
 In particular, we exploit Gaussian Processes in conjunction with MAB algorithms such as Thompson Sampling and UCB1 to exploit the continuity between the different arms.
 We instantiate a GP-MAB for each subcampaign and each MAB will have \texttt{n\_budget\_steps} number of arms.
 
+\subsection{Gaussian Processes}
+
+Gaussian Processes (GPs) are a powerful tool to tackle regression problems: by defining a kernel with its parameters and feeding the GP with the arms pulled by the bandit and their rewards it's possible to obtain a probability distribution over the outcome in form of arrays of \textbf{means} and \textbf{sigmas}.
+Different bandit algorithms use those values in different ways.
+
+Each GP has been instantiated with the kernel: $Ck(\theta) * RBF(\ell)$ where $Ck$ is the $\theta$-constant kernel and $RBF$ is the \textit{Radial Basis Function} kernel of length $\ell$, defined as:
+
+\begin{displaymath}
+exp \left( - \frac{ \lVert x - x' \rVert^2 }{ 2\ell^2} \right)
+\end{displaymath}
+
+The regret bound for algorithms that utilize gaussian processes in an advertising environment is identified as follows:
+
+\begin{displaymath}
+	R_T \le \sqrt{ \frac{2\Lambda^2}{log(1+\frac{1}{\sigma^2})} CBT \sum_{k=1}^C \gamma_{k, T} } \text{ with probability of } 1 - \delta
+\end{displaymath}
+where:
+\begin{displaymath}
+	B = 8log\left( 2\frac{T^2MC}{\delta} \right)
+\end{displaymath}
+
+\begin{itemize}
+	\setlength\itemsep{-0.3em}
+	\item C=5 is \textit{number of subcampaigns}
+	\item M=20 is the \textit{number of arms}
+	\item $\delta$=5 is the \textit{confidence} of the regret bound
+	\item $\sigma$=5 is the \textit{maximum variance} of the GP
+	\item $\gamma_{k, T}$ is the \textit{information gain} at time T for subcampaign k
+	\item $\Lambda$ is the \textit{Lipschitz constant} of the problem
+\end{itemize}
+
 \subsection{Algorithms outline}
 
 The main two MAB algorithms that we are going to use present some minor variations when used in conjunction with Gaussian Processes; we can consider the GPTS algorithm as a baseline for the GPUCB1 since it directly uses the GPs' features to gather samples, while in the GPUCB1 we need to build a confidence bound before.
@@ -103,12 +134,6 @@ Average regret comparison
 \begin{center}
 	\includegraphics[scale=0.5]{img/Graphs/uncertain_alpha/image6.png}
 \end{center}
-
-\begin{displaymath}
-	\text{Regret ratio } = \frac{\text{Avg regret}}{\text{Upper bound}} = \frac{31019.40}{?} = ?
-\end{displaymath}
-
-\todo{complete}
 
 \subsection{Conclusions}
 
