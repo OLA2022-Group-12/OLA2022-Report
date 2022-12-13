@@ -141,10 +141,10 @@ Usually we consider averaged results between multiple runs in order to reduce va
 \frametitle{Gaussian processes}
 
 \textbf{Gaussian Processes} (\textbf{GPs}) are a powerful tool to tackle regression problems: by defining a \textbf{kernel} with its parameters and feeding the GP with the arms pulled by the bandit and their rewards it's possible to obtain a probability distribution over the outcome in form of arrays of \textbf{means} and \textbf{sigmas}.
-
-Different bandit algorithms use those values in different ways as the \textbf{GPUCB} uses them to build a confidence bound and \textbf{GPTS} uses them directly to output estimations.
+Different bandit algorithms use those values in different ways.
 
 Each \textbf{GP} has been instantiated with the kernel: $Ck(\theta) * RBF(\ell)$ where $Ck$ is the $\theta$-constant kernel and $RBF$ is the \textit{Radial Basis Function} kernel of length $\ell$, defined as:
+
 \begin{displaymath}
 exp \left( - \frac{ \lVert x - x' \rVert^2 }{ 2\ell^2} \right)
 \end{displaymath}
@@ -168,9 +168,15 @@ where:
     B = 8log\left( 2\frac{T^2MC}{\delta} \right)
 \end{displaymath}
 
-In our case $C=5$ (number of subcampaigns), $\delta=?$ (regret bound confidence), $\gamma_{k, T}=? ~\forall k \text{ subcampaigns}$ (information gain at $T$), $\Lambda=?$ (Lipschitz constant of the problem), $M=?$ (number of arms) and $\sigma=?$ (maximum variance of the GP).
-
-\todo{variable values}
+\begin{itemize}
+    \setlength\itemsep{-0.3em}
+    \item C=5 is \textit{number of subcampaigns}
+    \item M=20 is the \textit{number of arms}
+    \item $\delta$=5 is the \textit{confidence} of the regret bound
+    \item $\sigma$=5 is the \textit{maximum variance} of the GP
+    \item $\gamma_{k, T}$ is the \textit{information gain} at time T for subcampaign k
+    \item $\Lambda$ is the \textit{Lipschitz constant} of the problem
+\end{itemize}
 
 \end{frame}
 
