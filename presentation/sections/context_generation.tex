@@ -11,7 +11,7 @@
 
 The goal of \textbf{context generation} and \textbf{contextual bandit algorithms} is to employ a (partially) disaggregated approach in order to better exploit the differences of the users that belong to different classes.
 
-This is made possible by using a specialized Learner for each context and an \textit{offline context generation algorithm} that decides which contexts are worth to target by isolating them from the aggregated data.
+This is made possible by using a specialized Learner for each context and an \textit{offline context generation algorithm} that decides which contexts are worth to target by isolating them from the aggregated data. This algorithm is ran every two weeks.
 
 Each context is able to target a set of features, and a \textbf{context structure} is a set of contexts that targets all the existing features without any overlap.
 
@@ -77,14 +77,14 @@ These particular points are critical parts that absolutely need to be revisioned
 \begin{frame}
 
 \frametitle{Greedy algorithm}
-\framesubtitle{Part 1}
+\framesubtitle{Part 1 of 2}
 
 We generate contexts following a \textbf{greedy algorithm} that, given a context $c$:
 
 \begin{itemize}[label={*}]
     \item Considers all the possible binary 1-feature splits $\{c_i^0$, $c_i^1\}_n$ for the features not present in $c$.
     \item Creates and evaluates a new learner for each split $c_i^j$, obtaining the \textbf{context probability} $p_i^j$ and the \textbf{best expected reward} $\mu_i^j$.
-    \item ...
+    \item $\rightarrow$
 \end{itemize}
 
 \end{frame}
@@ -94,10 +94,10 @@ We generate contexts following a \textbf{greedy algorithm} that, given a context
 \begin{frame}
 
 \frametitle{Greedy algorithm}
-\framesubtitle{Part 2}
+\framesubtitle{Part 2 of 2}
 
 \begin{itemize}[label={*}]
-    \item ...
+    \item $\rightarrow$
     \item Evaluates the \textbf{splitting condition} on each couple of splits $(c_i^0$, $c_i^1)$ w.r.t the original context $c$ while deciding which split is the best one (if it exists).
     \item If a split has been made, repeat all the operations recursively on the new contexts until \textit{no split is made} or \textit{no split is possible}.
 \end{itemize}

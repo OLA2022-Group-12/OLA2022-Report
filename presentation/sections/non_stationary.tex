@@ -34,19 +34,6 @@ Neither \textbf{UCB} nor \textbf{TS} account for abrupt changes since it's almos
 
 % ----------------------------------------
 
-\begin{frame}
-\frametitle{Simulating abrupt changes}
-
-In the early stages of the project we noticed that the \textbf{Simulation} that we created wasn't really fit to dinamically include abrupt changes in the environment, therefore great effort was spent in completely reworking the interface for the \textbf{Simulation} from the ground-up.
-
-Besides collateral improvements in reproducibility, results collection and user-friendliness, the new \textbf{Simulation} allowed for an \textit{incremental simulation unfolding}, this meant that we were now able to simulate \textit{n} days, change the environment and simulate another \textit{n} days.
-
-This particular feature revealed itself as fundamental for the upcoming challenges.
-
-\end{frame}
-
-% ----------------------------------------
-
 \subsection{Algorithms}
 
 % ----------------------------------------
@@ -90,7 +77,7 @@ It's clear that \textbf{Sliding window} approaches are more fit for \textbf{smoo
 \begin{frame}
 \frametitle{Change detection}
 
-We used a \textbf{reward-based algorithm} as a \textit{change detection algorithm}, it works by comparing the last $k$ rewards with the newest $k$ rewards ($k=4$ by default) and if the difference between their means exceedes a certain threshold $\omega$ ($\omega=400$ by default) the learner is \textbf{reset} and is therefore able to learn a new optimal superarm from scratch.
+We used a \textbf{reward-based algorithm} as a \textit{change detection algorithm}, it works by comparing the last $k$ rewards with the newest $k$ rewards ($k=4$ by default) and if the difference between their means exceedes a certain threshold $\omega$ ($\omega=1000$ by default) the learner is \textbf{reset} and is therefore able to learn a new optimal superarm from scratch.
 
 Formally:
 \begin{displaymath}
@@ -135,7 +122,7 @@ We calculated the mean \textbf{reward} and \textbf{regret} considering their var
 \begin{frame}
 \frametitle{Theoretical guarantees}
 
-In addition, if the \textbf{number of breakpoints} $m$ is small enough with respect to the \textbf{time horizon} $T$ to the power of $\alpha$ we have that the \textbf{regret} is of the order $O\left( \vert A \vert T^{\frac{1+\alpha}{2}} \right)$
+In addition, if the \textbf{number of breakpoints} $m$ is small enough with respect to the \textbf{time horizon} $T$ to the power of $\alpha$ we have that the \textbf{regret} is of the order $O\left( \vert A \vert T^{\frac{1+\alpha}{2}} \right)$.
 
 \end{frame}
 
