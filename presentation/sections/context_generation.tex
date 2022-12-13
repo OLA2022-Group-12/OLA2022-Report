@@ -84,7 +84,7 @@ We generate contexts following a \textbf{greedy algorithm} that, given a context
 \begin{itemize}[label={*}]
     \item Considers all the possible binary 1-feature splits $\{c_i^0$, $c_i^1\}_n$ for the features not present in $c$.
     \item Creates and evaluates a new learner for each split $c_i^j$, obtaining the \textbf{context probability} $p_i^j$ and the \textbf{best expected reward} $\mu_i^j$.
-    \item $\rightarrow$
+    \item[] $\rightarrow$
 \end{itemize}
 
 \end{frame}
@@ -97,7 +97,7 @@ We generate contexts following a \textbf{greedy algorithm} that, given a context
 \framesubtitle{Part 2 of 2}
 
 \begin{itemize}[label={*}]
-    \item $\rightarrow$
+    \item[] $\rightarrow$
     \item Evaluates the \textbf{splitting condition} on each couple of splits $(c_i^0$, $c_i^1)$ w.r.t the original context $c$ while deciding which split is the best one (if it exists).
     \item If a split has been made, repeat all the operations recursively on the new contexts until \textit{no split is made} or \textit{no split is possible}.
 \end{itemize}
