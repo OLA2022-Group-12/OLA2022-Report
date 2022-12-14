@@ -1,6 +1,6 @@
 # PDF PRODUCTS
-presentation.pdf
-report.pdf
+presentation/presentation.pdf
+report/report.pdf
 
 # Created by https://www.toptal.com/developers/gitignore/api/latex
 # Edit at https://www.toptal.com/developers/gitignore?templates=latex
