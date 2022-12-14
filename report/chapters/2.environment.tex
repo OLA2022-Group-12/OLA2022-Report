@@ -116,14 +116,84 @@ The basic idea of the simulation is to simulate a real scenario day by day using
 
 Repeating the simulation execution step for each day until an arbitrary \textbf{time horizon} is reached grants us all the data needed to evaluate the performance of our learner.
 
-\begin{enumerate}
-    \item Computation of the rewards
+The main method of interaction with a simulation is the \texttt{simulate} function, which runs the simulation for a specified number of days, this preserves the status of the simulation, enabling consecutive calls of this function in order to simulate multiple batches of days step-by-step.
+Inside the simulation module exist some quality-of-life functions such as \texttt{create\_n} and \texttt{simulate\_n}, which respectively create and call simulate on batches of $n$ simulations; this is useful to collect average results over a large number of runs.
 
-    With the aid of the function \textit{get\_reward\_from\_interactions} we compute the aggregated margin and the margin for each of the 3 classes of users. This is made possible by accessing and adding the single interactions from the Environment.
+\begin{lstlisting}[style = Python]
+def create_n(
+    rng: Generator,
+    env: EnvironmentData,
+    step: Step = Step.ZERO,
+    n: int = 2,
+    n_budget_steps: int = 20,
+    population_mean: int = 100,
+    population_variance: int = 10,
+    **learner_params,
+):
 
-    \item Simulation
+    """Helper function that simplifies the creation of multiple equal simulations
+	at once
+    Arguments:
+        n: number of simulations to create
+        rng: randomness generator
+        env: environment where the simulation is going to be run
+        step: step number of the simulation, related to the various steps requested
+        by the project specification and corresponding to which properties
+        of the environment are masked to the learner and to which learner is going
+        to be instantiatiated
+        n_budget_steps: number of steps in which the budget must be divided
+        population_mean: expected value of the number of new potential
+        customers every day
+        population_variance: variance of the daily number of potential customers
+        learner_params: various parameters used to created the selected learner
+    Returns:
+        A list of new simulations with the parameters specified
+    """
 
-    This function, given the appropriate \textit{"masked"} environment, runs the simulation for a certain number of experiments in order to have results that are statistically relevant, each experiment simulates a tunable amount of days. By default, the number of experiments is set to 1 because in a real world situation we can't expect to have enough time or money to run the same experiment several times. The function returns the collected rewards for each experiment.
-\end{enumerate}
+    return [
+        Simulation(
+            rng,
+            env,
+            step=step,
+            n_budget_steps=n_budget_steps,
+            population_mean=population_mean,
+            population_variance=population_variance,
+            **learner_params,
+        )
+        for i in range(n)
+    ]
 
-\todo{fix and add code maybe}
+def simulate_n(
+    simulations: List[Simulation],
+    n_days: int = 100,
+    show_progress_graphs: bool = False,
+):
+
+    """Helper function that simplifies the act of running multiple simulations with
+	the purpose of visualization of the results
+    Arguments:
+        simulations: list of simulation objects that will be run
+        n_days: number of days to run each simulation for
+        show_progress_graphs: if set to True, will visualize the learner progress graphs
+        (if implemented) at each iteration
+    Returns:
+        A list containing all the collected rewards obtained by running all
+		the simulations.
+    """
+
+    rewards = []
+
+    for sim in simulations:
+        sim.simulate(n_days, show_progress_graphs)
+        rewards.append(sim.rewards)
+
+    return rewards
+\end{lstlisting}
+
+\subsection{Simulation example}
+
+Example of two simulation runs for learners in an environment with total\_budget = 400 and population\_mean = 1000.
+
+\begin{center}
+    \includegraphics[scale=0.5]{img/Graphs/env_sim/image1.png}
+\end{center}

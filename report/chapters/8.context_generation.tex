@@ -90,5 +90,40 @@ def predict(self, _) -> Tuple[np.ndarray, Optional[List[List[Feature]]]]:
 \section{Results}
 \label{sec:ctx_gen_res}
 
-\subsection{-}
-\todo{insert results}
+Reward and regret for the contextual learner
+
+\begin{center}
+	\hspace*{-2em}
+	\includegraphics[scale=0.5]{img/Graphs/context_generation/image1.png}
+\end{center}
+
+Average reward and regret for the contextual learner
+
+\begin{center}
+	\hspace*{-5em}
+	\includegraphics[scale=0.7]{img/Graphs/context_generation/image2.png}
+\end{center}
+
+All tests are done using the \texttt{example\_environment} default values, \textit{population mean} of 800, \textit{variance} of 10 and 20 \textit{budget steps}; while only TS algorithms were evaluated.
+
+\subsection{Conclusions}
+
+Even though the results might not be completely satisfying as we would expect a performance superior w.r.t. the \textit{clairvoyant estimation}, on average we still perform better than the AlphaUnitLess learner as we seem to converge to the optimal superarm for the aggregated contexts.
+
+Overall the learners seem to prefer \textbf{early splitting} but various parameters can be tuned (e.g. bound confidence) to make the process of splitting on contexts more \textit{rigorous}.
+Furthermore, by looking at the \texttt{example\_environment} structure, it comes clear why the contextual learners seem to prefer splitting on the first binary feature: it creates an evident division between the first class and the other two classes while splitting on the second feature first would create hybrid contexts.
+
+Average results over 30 runs at time horizon $T = 50$:
+
+\begin{table}[h]
+	\center
+	\begin{tabular}{|c|cc|c|}
+	\hline \hline
+		\cellcolor{blue!25} & Reward 	& Regret	& Deviation \\
+	\cline{2-4}
+		\cellcolor{blue!25} & $\mu$		& $\mu$		& $\sigma$	\\
+	\hline \hline
+		Contextual learner	& 9065.30	& 61719.2	&  273.67	\\
+	\hline \hline
+	\end{tabular}
+\end{table}

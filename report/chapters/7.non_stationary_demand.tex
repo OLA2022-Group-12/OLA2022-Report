@@ -66,8 +66,58 @@ Formally:
 \section{Results}
 \label{sec:ns_demand_res}
 
-\todo{insert results}
+Average reward and regret for the base learner
 
-\subsection{Theoretical guarantees}
+\begin{center}
+    \includegraphics[scale=0.5]{img/Graphs/non_stationary/image1.png}
+\end{center}
 
-In addition, if the number of breakpoints $m$ is small enough with respect to the \textbf{time horizon} $T$ to the power of $\alpha$ we have that the regret is of the order $O\left( \vert A \vert T^{\frac{1+\alpha}{2}} \right)$.
+\clearpage % Aesthetic
+
+Average reward and regret for the sliding window learner
+
+\begin{center}
+    \includegraphics[scale=0.5]{img/Graphs/non_stationary/image2.png}
+\end{center}
+
+Average reward and regret for the change detection learner
+
+\begin{center}
+    \includegraphics[scale=0.5]{img/Graphs/non_stationary/image3.png}
+\end{center}
+
+Reward and regret comparison
+
+\begin{center}
+    \hspace*{-3em}
+    \includegraphics[scale=0.5]{img/Graphs/non_stationary/image4.png}
+\end{center}
+
+\clearpage % Aesthetic
+
+All tests are done using the \texttt{example\_environment} with default values, \textit{population mean} of 1000, \textit{variance} of 10 and 20 \textit{budget steps}; while only UCB algorithms were evaluated and only one breakpoint was placed after 30 days.
+
+\subsection{Conclusions}
+
+From the results it's quite clear that the change detection algorithm is by far the best one in this specific scenario, while it's interesting to see that the sliding window approach it's slower to stabilize (due to the fact that the samples from the old environment must completely exit the window to not be considered) and the base learner approach isn't able to adapt, as expected.
+
+Generalizing, we can say that if the number of breakpoints $m$ is small enough with respect to the time horizon $T$ to the power of $\alpha$ we have that the regret is of the order $O\left( \vert A \vert T^{\frac{1+\alpha}{2}} \right)$.
+
+Average results over 10 runs at time horizon $T = 80$:
+
+\begin{table}[h]
+    \center
+    \begin{tabular}{|c|cc|c|}
+    \hline \hline
+        \cellcolor{blue!25} & Reward 	& Regret	& Deviation \\
+    \cline{2-4}
+        \cellcolor{blue!25} & $\mu$		& $\mu$		& $\sigma$	\\
+    \hline \hline
+        Base learner		& 7717.40	& 376073.10	& 877.73	\\
+    \hline
+        Sliding window		& 12571.80	& 271383.60	& 908.26	\\
+    \hline
+        Change detection	& 13452.30	& 126329.10	& 684.53	\\
+    \hline \hline
+    \end{tabular}
+\end{table}
