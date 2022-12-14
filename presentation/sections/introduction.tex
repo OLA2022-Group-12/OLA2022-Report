@@ -1,0 +1,199 @@
+% ----------------------------------------
+
+\subsection{Assignment}
+
+% ----------------------------------------
+
+\begin{frame}
+
+\frametitle{Project Scope}
+\framesubtitle{Assignment}
+
+The focus of this project is to optimize the budget allocated for the \textbf{advertisement campaigns} of 5 different items in order to maximize the profit of an \textit{e-commerce website} that sells products to the public.
+
+Each page has a \textbf{primary product} and two \textbf{secondary products}, each user that lands on a page has a possibility to buy the primary product and/or proceed to one of the secondaries with a given probability, the process repeats.
+
+\end{frame}
+
+
+% ----------------------------------------
+
+\begin{frame}
+
+\frametitle{General hypoteses}
+
+The main general hypoteses that were given to us are:
+\begin{itemize}[label={-}]
+    \item For every \textit{primary product}, the \textit{secondary products} to display and their order is fixed.
+    \item The price of every product is fixed and it is equal to the margin.
+    \item By clicking on a specific ad, the user lands on the corresponding \textit{primary product}.
+    \item No bidding optimization needs to be performed.
+\end{itemize}
+
+\end{frame}
+
+% ----------------------------------------
+
+\subsection{Technical Approach}
+
+% ----------------------------------------
+
+\begin{frame}
+
+\frametitle{Learner interface}
+\framesubtitle{Description}
+
+In order for our project to have a more general outline, we decided to model a \textbf{generic learner interface} to standardize how our agents should be expected to behave while learning the budget distribution for a set of subcampaigns in a specific scenario defined by the environment.
+
+In particular, each learner is characterized by the \textit{learn} and \textit{predict} actions.
+Every different type of learner will also receive a customized set of information filtered by the \textit{masked environment} (in line with each project step) and potentially employs different algorithms to learn and predict the various budgets.
+
+\end{frame}
+
+% ----------------------------------------
+
+\begin{frame}[fragile]
+
+\frametitle{Learner interface}
+\framesubtitle{Code}
+
+%Arguments: interactions: the interactions of the users which led to the given reward reward: the reward obtained from the environment based on the prediction given, needed for the tuning of internal properties done by the learner
+%prediction: array containing the previous budget evaluation of the learner
+%
+%Arguments: data: up-to-date, complete or incomplete environment information that is used by the learner in order to make the inference
+%Returns: a tuple containing a list of values (corresponding to the budgets inferred given the knowledge obtained by the learner until now) and a list of features (referring to which particular customers were the budgets aimed for, if None, the budgets apply to all the customers)
+
+\begin{lstlisting}[style=Python, basicstyle=\tiny, numbers=none, framexrightmargin=-20pt]
+class Learner(ABC):
+
+  # Updates the learner's properties according to the reward received.
+  \@@abstractmethod@@/
+  def learn(self, interactions: List[Interaction], reward: float,
+            prediction: np.ndarray):
+    pass
+
+  # Makes an inference about the values of the budgets for the subcampaigns
+  # from the information got over time and the current environment
+  \@@abstractmethod@@/
+  def predict(self, data: MaskedEnvironmentData) ->
+              Tuple[np.ndarray, Optional[List[List[Feature]]]]:
+    pass
+
+  # Creates a figure and plots showing the status of learning progress
+  \@@abstractmethod@@/
+  def show_progress(self, fig: plt.Figure):
+    pass
+
+\end{lstlisting}
+
+\end{frame}
+
+% ----------------------------------------
+
+\begin{frame}
+
+\frametitle{Comparing results}
+
+For each different learner, when possible, we will show our results through the comparison of the rewards obtained by each algorithm against the rewards achieved (in the same enviroment setting) from the \textbf{Clairvoyant learner} and the Stupid learner.
+This, aside from theoretical formulations, will help us to define \textbf{upper bounds} and \textbf{lower bounds} for different solutions.
+
+The \textit{Stupid Learner} always subdivides the budget \textit{equally} between products.
+
+In particular, the \textbf{Clairvoyant learner} makes its "prediction" with full knowledge of the problem by identifying the \textbf{optimal superarm} (which corresponds to the optimal assigment of budgets) and placing it in a deterministic environment to collect \\ an estimate of the best rewards achievable.
+
+\end{frame}
+
+% ----------------------------------------
+
+\begin{frame}
+
+\frametitle{Comparing results}
+\framesubtitle{Clairvoyant learner}
+
+To estimate the \textbf{optimal superarm} we compute the \textbf{reward multipliers} (how much profit a single product brings on average) through hypotetical deterministic graph walks, performed by group of users following the expected values of the distributions defined on the graph edges.
+In addition, to remove any \textbf{non-determinism}, $\alpha$-values are applied directly without any \textit{Dirichlet noise} applied to them.
+
+Given this definition of \textbf{clairvoyant reward} it may happen that, during simulation runs, the \textit{learner reward} surpasses the \textit{clairvoyant reward}; this is an expected and negligible behavior caused by the absence of noise in the clairvoyant formulation.
+
+\end{frame}
+
+% ----------------------------------------
+
+\begin{frame}
+
+\frametitle{Comparing results}
+\framesubtitle{Regret}
+
+In order to evaluate the performance of our learners against the \textit{clairvoyant result} we use the \textbf{cumulated regret} formulation:
+
+\begin{displaymath}
+    R_T(L) := T\mu_{a^*} - \sum_{t = 1}^T \mu_{a_t}
+\end{displaymath}
+
+Usually we consider averaged results between multiple runs in order to reduce variance in the outcomes.
+
+\end{frame}
+
+% ----------------------------------------
+
+\begin{frame}
+
+\frametitle{Gaussian processes}
+
+\textbf{Gaussian Processes} (\textbf{GPs}) are a powerful tool to tackle regression problems: by defining a \textbf{kernel} with its parameters and feeding the GP with the arms pulled by the bandit and their rewards it's possible to obtain a probability distribution over the outcome in form of arrays of \textbf{means} and \textbf{sigmas}.
+Different bandit algorithms use those values in different ways.
+
+Each \textbf{GP} has been instantiated with the kernel: $Ck(\theta) * RBF(\ell)$ where $Ck$ is the $\theta$-constant kernel and $RBF$ is the \textit{Radial Basis Function} kernel of length $\ell$, defined as:
+
+\begin{displaymath}
+exp \left( - \frac{ \lVert x - x' \rVert^2 }{ 2\ell^2} \right)
+\end{displaymath}
+
+\end{frame}
+
+% ----------------------------------------
+
+\begin{frame}
+
+\frametitle{Gaussian processes}
+\framesubtitle{Regret}
+
+\vspace*{-3em}
+
+\begin{displaymath}
+    R_T \le \sqrt{ \frac{2\Lambda^2}{log(1+\frac{1}{\sigma^2})} CBT \sum_{k=1}^C \gamma_{k, T} } \text{ with probability of } 1 - \delta
+\end{displaymath}
+where:
+\begin{displaymath}
+    B = 8log\left( 2\frac{T^2MC}{\delta} \right)
+\end{displaymath}
+
+\begin{itemize}
+    \setlength\itemsep{-0.3em}
+    \item C=5 is \textit{number of subcampaigns}
+    \item M=20 is the \textit{number of arms}
+    \item $\delta$=5 is the \textit{confidence} of the regret bound
+    \item $\sigma$=5 is the \textit{maximum variance} of the GP
+    \item $\gamma_{k, T}$ is the \textit{information gain} at time T for subcampaign k
+    \item $\Lambda$ is the \textit{Lipschitz constant} of the problem
+\end{itemize}
+
+\end{frame}
+
+% ----------------------------------------
+
+\begin{frame}
+
+\frametitle{MAB algorithms}
+\framesubtitle{TS and UCB}
+
+\vspace*{-0.5em}
+To tackle most of the problems in this project we will use two main \textbf{MAB} algorithms called \textbf{Thompson sampling} (\textbf{TS}) and \textbf{Upper Confidence Bound 1} (\textbf{UCB1}).
+
+In the \textbf{UCB1} algorithm, every \textit{arm} is associated with an \textbf{upper confidence bound} which provides an \textit{estimation} of the reward gained by playing that specific arm, at every trial, the arm with the \textbf{highest upper confidence bound} is pulled and the bound is updated accordingly.
+
+Some aspects of \textbf{TS} are similar to \textbf{UCB1} but the main difference is that in \textbf{TS} every arm is associated to a prior $\beta$ distribution and every arm has a prior on its \textbf{expected value} based on it; at every trial the algorithm chooses the arm with the \textbf{best sample}, then, it updates the distribution of the chosen arm according to the observed realization.
+
+\end{frame}
+
+% ----------------------------------------
