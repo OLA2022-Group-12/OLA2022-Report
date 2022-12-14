@@ -131,7 +131,7 @@ for context $i$ defined by a binary feature split on 0 and 1.
 
 \frametitle{Context utilization}
 
-Once a certain number of contexts has been established, a \textbf{Contextual Learner} will be able to assign an \textbf{Alphaless Learner} to each context and obtain their raw predictions by utilizing the function \textbf{predict\_raw} (which returns an un-optimized array of predictions) and then running the optimization algorithm on all the predictions gathered this way.
+Once a certain number of contexts has been established, a \textbf{Contextual Learner} will be able to assign an \textbf{AlphaUnitless Learner} to each context and obtain their raw predictions by utilizing the function \textbf{predict\_raw} (which returns an un-optimized array of predictions) and then running the optimization algorithm on all the predictions gathered this way.
 
 The resulting \textit{superarm} is then passed to the \textbf{Simulation} which, in return, generates the interactions for the day by weighting the different classes according to the disaggregated predictions.
 
@@ -141,15 +141,62 @@ The resulting \textit{superarm} is then passed to the \textbf{Simulation} which,
 
 \subsection{Results}
 
-%-----------------------------------------
+% ----------------------------------------
+
+\begin{frame}[plain]
+
+\frametitle{Reward and regret}
+\framesubtitle{Contextual learner}
+
+\begin{center}
+    \hspace*{-2.8em}
+    \includegraphics[scale=0.43]{img/Graphs/context_generation/image1.png}
+\end{center}
+
+\end{frame}
+
+% ----------------------------------------
+
+\begin{frame}[plain]
+
+\frametitle{Average reward and regret}
+\framesubtitle{Contextual learner}
+
+\begin{center}
+    \hspace*{-2.8em}
+    \includegraphics[scale=0.49]{img/Graphs/context_generation/image2.png}
+\end{center}
+
+\vspace*{2em}
+
+\scriptsize All tests are done using the \texttt{example\_environment} default values, \textit{population mean} of 800, \textit{variance} of 10 and 20 \textit{budget steps}. Only \textbf{TS} algorithms were evaluated.
+
+\end{frame}
+
+% ----------------------------------------
 
 \begin{frame}
 
 \frametitle{Results}
-\framesubtitle{}
 
-\todo{Insert results}
+Even though the results might not be completely satisfying as we would expect a performance superior w.r.t. the \textit{clairvoyant estimation}, on average we still perform better than the \textbf{AlphaUnitLess learner} as we seem to converge to the optimal superarm for the aggregated contexts.
+
+Overall the learners seem to prefer \textbf{early splitting} but various parameters can be tuned (e.g. bound confidence) to make the process of splitting on contexts more \textit{rigorous}.
+
+Average results over 30 runs at time horizon $T = 50$:
+
+\begin{table}
+    \begin{tabular}{|c|cc|c|}
+    \hline \hline
+        \cellcolor{blue!25} & Reward 	& Regret	& Deviation \\
+    \cline{2-4}
+        \cellcolor{blue!25} & $\mu$		& $\mu$		& $\sigma$	\\
+    \hline \hline
+        Contextual learner	& 9065.30	& 61719.2	&  273.67	\\
+    \hline \hline
+    \end{tabular}
+\end{table}
 
 \end{frame}
 
-%-----------------------------------------
+% ----------------------------------------

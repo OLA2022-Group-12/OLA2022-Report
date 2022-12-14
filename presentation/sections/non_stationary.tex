@@ -94,35 +94,92 @@ Formally:
 
 % ----------------------------------------
 
-\begin{frame}
-\frametitle{}
-\framesubtitle{}
+\begin{frame}[plain]
 
-\todo{insert correct image}
-%\makebox[\textwidth]{\includegraphics[width=\paperwidth]{img/Graphs/non_stationary/image2.png}}
+\frametitle{Average eward and regret}
+\framesubtitle{Base learner}
 
-\scriptsize Graphs representing reward and regret in the non-stationary environment with different approaches. (Only \textbf{UCB} algorithms were evaluated)
+\begin{center}
+    \hspace*{-2.8em}
+    \includegraphics[scale=0.5]{img/Graphs/non_stationary/image1.png}
+\end{center}
+
+\end{frame}
+
+% ----------------------------------------
+
+\begin{frame}[plain]
+
+\frametitle{Average eward and regret}
+\framesubtitle{Sliding window}
+
+\begin{center}
+    \hspace*{-2.8em}
+    \includegraphics[scale=0.5]{img/Graphs/non_stationary/image2.png}
+\end{center}
+
+\end{frame}
+
+% ----------------------------------------
+
+\begin{frame}[plain]
+
+\frametitle{Average reward and regret}
+\framesubtitle{Change detection}
+
+\begin{center}
+    \hspace*{-2.8em}
+    \includegraphics[scale=0.5]{img/Graphs/non_stationary/image3.png}
+\end{center}
 
 \end{frame}
 
 % ----------------------------------------
 
 \begin{frame}
-\frametitle{Reward and regret}
+\frametitle{Reward and regret comparison}
 
-We calculated the mean \textbf{reward} and \textbf{regret} considering their variance over multiple runs.
+\begin{center}
+    \includegraphics[scale=0.32]{img/Graphs/non_stationary/image4.png}
+\end{center}
 
-\todo{insert image}
-%\makebox[\textwidth]{\includegraphics[width=\paperwidth]{img/Graphs/non_stationary/image1.png}}
+\scriptsize All tests are done using the \texttt{example\_environment} with default values, \textit{population mean} of 1000, \textit{variance} of 10 and 20 \textit{budget steps}. Only \textbf{UCB} algorithms were evaluated. 1 breakpoint at 30 days.
 
 \end{frame}
 
 % ----------------------------------------
 
 \begin{frame}
-\frametitle{Theoretical guarantees}
+\frametitle{Results}
 
-In addition, if the \textbf{number of breakpoints} $m$ is small enough with respect to the \textbf{time horizon} $T$ to the power of $\alpha$ we have that the \textbf{regret} is of the order $O\left( \vert A \vert T^{\frac{1+\alpha}{2}} \right)$.
+From the results it's quite clear that the \textbf{change detection} algorithm is by far the best one in this specific scenario, while it's interesting to see that the \textbf{sliding window} approach it's slower to stabilize (due to the fact that the samples from the old environment must completely exit the window to not be considered) and the \textbf{base learner} approach isn't able to adapt, as expected.
+
+Generalizing, we can say that if the \textbf{number of breakpoints} $m$ is small enough with respect to the \textbf{time horizon} $T$ to the power of $\alpha$ we have that the \textbf{regret} is of the order $O\left( \vert A \vert T^{\frac{1+\alpha}{2}} \right)$.
+
+\end{frame}
+
+% ----------------------------------------
+
+\begin{frame}
+\frametitle{Results}
+
+Average results over 10 runs at time horizon $T = 80$:
+
+\begin{table}
+    \begin{tabular}{|c|cc|c|}
+    \hline \hline
+        \cellcolor{blue!25} & Reward 	& Regret	& Deviation \\
+    \cline{2-4}
+        \cellcolor{blue!25} & $\mu$		& $\mu$		& $\sigma$	\\
+    \hline \hline
+        Base learner		& 7717.40	& 376073.10	& 877.73	\\
+    \hline
+        Sliding window		& 12571.80	& 271383.60	& 908.26	\\
+    \hline
+        Change detection	& 13452.30	& 126329.10	& 684.53	\\
+    \hline \hline
+    \end{tabular}
+\end{table}
 
 \end{frame}
 
