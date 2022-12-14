@@ -1,7 +1,7 @@
 \chapter{Introduction}
 \label{chap:introduction}
 
-This project was made for the \texttt{Online Learning Applications} class at \textbf{Politecnico di Milano} with the supervision of prof. Nicola Gatti during a.a. 2021-2022; the project features a common part to all the project proposals, which is related to \textit{social influencing}, and a proposal-specific argument that, in our case, is \textit{advertising}. 
+This project was made for the \texttt{Online Learning Applications} class at \textbf{Politecnico di Milano} with the supervision of prof. Nicola Gatti during a.a. 2021-2022; the project features a common part to all the project proposals, which is related to \textit{social influencing}, and a proposal-specific argument that, in our case, is \textit{advertising}.
 
 \section{Overview}
 \label{sec:intro_overview}
@@ -10,9 +10,11 @@ The project should model an e-commerce website capable of offering to its custom
 
 Products are displayed inside web pages; a web page may have a \textit{primary product} (which can be bought directly) and two \textit{secondary products} organized as recommendations where the first \textit{secondary product} has higher priority than the second one, moreover, the price for \textit{secondary products} isn't shown but they have the capability of bringing the customer on their respective primary web page upon being clicked.
 
-Every day, customers can land on the primary pages of the various products or on the web page of a competitor. 
+Every day, customers can land on the primary pages of the various products or on the web page of a competitor.
 
-The website is in need of advertising its own products and has a predetermined \textit{budget} to spend in order to boost the probability of possible customers landing on a page owned by the website. 
+The website is in need of advertising its own products and has a predetermined \textit{budget} to spend in order to boost the probability of possible customers landing on a page owned by the website.
+
+The focus of this project is to optimize the budget allocated for the \textbf{advertisement campaigns} of the 5 products in order to maximize the profit of the website.
 
 \section{Hypoteses}
 \label{sec:intro_hypoteses}
@@ -24,13 +26,105 @@ This does not include specific hypoteses and assumptions that are strictly relat
 \begin{itemize}
     \item The customer effectively buys products only at the end of their visit to the website.
     \item A user buys an arbitrary amount of products of a certain type if the price of a single unit of product is strictly under their \textit{reservation price}.
+    \item The number of items that a user will buy is a random variable, independent from any other variable; but every user that lands on the page of a product will buy at least 1 unit of it if it's under their \textbf{reservation price}.
     \item The website offers an infinite number of units for each product and a can customer buy an arbitrary number of them.
     \item A single user won't open two times the same web page containing the same product during a visit to the website.
     \item All of the actions performed by the users are perfectly observable by the e-commerce website.
+    \item Every day, there is a random number (subject to noise) of potential new users.
+    \item The users can activate \textbf{parallel paths} while on the website.
+    \item The behavior of users can be modelled as a graph where \textit{nodes} represent product pages and \textit{weights} represent the probabilities for a user to click from the primary item of the page to one of the secondaries.
     \item Every \textit{primary product} has a \textbf{fixed} pair of \textit{secondary products} that will be displayed in the modalities discussed above.
     \item The price of every product is \textbf{fixed} and equal to the margin.
     \item There is an \textit{advertising campaign} for each product (5 in total), and clicking on an ad brings the user to the web page containing the advertised \textit{primary product}.
-    \item \textit{Bidding optimization} is outside the scope of the project.
+    \item \textit{Bidding optimization} is outside the scope of the project and is not performed.
 \end{itemize}
 
-\todo{add our additional hypoteses}
+\section{Approach}
+\label{sec:intro_approach}
+
+\subsection{Learners}
+
+In order for our project to have a more general outline, we decided to model a \textbf{generic learner interface} to standardize how our agents should be expected to behave while learning the budget distribution for a set of subcampaigns in a specific scenario defined by the environment.
+
+In particular, each learner is characterized by the \texttt{learn} and \texttt{predict} actions.
+Every different type of learner will also receive a customized set of information filtered by the \textit{masked environment} (in line with each project step) and potentially employs different algorithms to learn and predict the various budgets.
+
+\begin{lstlisting}[style=Python]
+class Learner(ABC):
+
+    """Generic Learner interface for interactive agents capable of learning the budget
+    distribution for a set of subcampaigns from the environment they exist in and the
+    online feedback returned.
+    """
+
+    \@@abstractmethod@@/
+    def learn(
+        self, interactions: List[Interaction], reward: float, prediction: np.ndarray
+    ):
+
+        """Updates the learner's properties according to the reward received.
+        Arguments:
+            interactions: the interactions of the users which led to the given
+            reward
+            reward: the reward obtained from the environment based on the
+            prediction given, needed for the tuning of internal properties done
+            by the learner
+            prediction: array containing the previous budget evaluation of the learner
+        """
+
+        pass
+
+    \@@abstractmethod@@/
+    def predict(
+        self, data: MaskedEnvironmentData
+    ) -> Tuple[np.ndarray, Optional[List[List[Feature]]]]:
+
+        """Makes an inference about the values of the budgets for the subcampaigns
+        utilizing the information gathered over time and the current state of the
+        environment
+        Arguments:
+            data: up-to-date, complete or incomplete environment information that is
+                used by the learner in order to make the inference
+        Returns:
+            a tuple containing a list of values (corresponding to the budgets inferred
+            given the knowledge obtained by the learner until now) and a list of
+            features (referring to which particular customers were the budgets aimed
+            for, if None, the budgets apply to all the customers)
+        """
+
+        pass
+
+    \@@abstractmethod@@/
+    def show_progress(self, fig: plt.Figure):
+
+        """Creates a figure and plots showing the status of learning progress
+        Arguments:
+            fig: a matplotlib figure which will be filled with subplots/plots
+        """
+        pass
+\end{lstlisting}
+
+To tackle most of the problems in this project we will use two main MAB algorithms called Thompson sampling (TS) and Upper Confidence Bound 1 (UCB1).
+
+In the UCB1 algorithm, every \textit{arm} is associated with an \textit{upper confidence bound} which provides an \textit{estimation} of the reward gained by playing that specific arm, at every trial, the arm with the highest upper confidence bound is pulled and the bound is updated accordingly.
+
+Some aspects of TS are similar to UCB1 but the main difference is that in TS every arm is associated to a prior $\beta$ distribution and every arm has a prior on its expected value based on it; at every trial the algorithm chooses the arm with the best sample, then, it updates the distribution of the chosen arm according to the observed realization.
+
+\subsection{Regret}
+
+For each different learner, when possible, we will show our results through the comparison of the rewards obtained by each algorithm against the rewards achieved (in the same enviroment setting) from the Clairvoyant learner and the Stupid learner.
+This, aside from theoretical formulations, will help us to define upper bounds and lower bounds for different solutions.
+
+The \textit{Stupid Learner} always subdivides the budget \textit{equally} between products while, in particular, the \textit{Clairvoyant learner} makes its "prediction" with full knowledge of the problem by identifying the optimal superarm (which corresponds to the optimal assigment of budgets) and placing it in a deterministic environment to collect an estimate of the best rewards achievable.
+
+To estimate the optimal superarm we compute the reward multipliers (how much profit a single product brings on average) through hypotetical deterministic graph walks, performed by group of users following the expected values of the distributions defined on the graph edges.
+In addition, to remove any non-determinism, $\alpha$-values are applied directly without any \textit{Dirichlet noise} applied to them.
+Given this definition of clairvoyant reward it may happen that, during simulation runs, the \textit{learner reward} surpasses the \textit{clairvoyant reward}; this is an expected and negligible behavior caused by the absence of noise in the clairvoyant formulation.
+
+In order to evaluate the performance of our learners against the \textit{clairvoyant result} we use the \textbf{cumulated regret} formulation:
+
+\begin{displaymath}
+    R_T(L) := T\mu_{a^*} - \sum_{t = 1}^T \mu_{a_t}
+\end{displaymath}
+
+Usually we consider averaged results between multiple runs in order to reduce variance in the outcomes.

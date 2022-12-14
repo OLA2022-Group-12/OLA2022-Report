@@ -8,9 +8,11 @@
 \usepackage{hyperref}   % Table of contents hyperlinks
 \usepackage{parskip}    % Paragraph indent & skip
 \usepackage{graphicx}   % 'graphics' package interface
+\usepackage{colortbl}	% Colored tables
 \usepackage{listings}   % Code sections formatting
 \usepackage{xcolor}     % More colors
 \usepackage{amsmath}    % Math
+\usepackage{amsfonts}   % Math fonts
 
 \usepackage{csquotes}   % recommended for biblatex
 
@@ -26,11 +28,6 @@
     dashed=false
 ]{biblatex}             % for bibliography
 
-% HELPER PACKAGES (REMOVE IN FINAL) %
-\usepackage{todonotes}
-\usepackage{blindtext}
-% HELPER PACKAGES (REMOVE IN FINAL) %
-
 % Custom Monospace + Bold command: \textttbf{"text"}
 \def\textttbf#1{\renewcommand{\ttdefault}{pcr}\texttt{\textbf{#1}}\renewcommand{\ttdefault}{cmtt}}
 
@@ -39,7 +36,7 @@
 \definecolor{CommentGreen}{RGB}{29, 204, 49}
 
 % Hyperlink setup
-\hypersetup{   
+\hypersetup{
     colorlinks,
     citecolor = blue,
     filecolor = blue,
@@ -49,7 +46,7 @@
 
 % Python code formatting
 % Use it by creating an environment like \begin{lstlisting}[style=Python] ... \end{lstlisting}
-% Since annotations aren't tagged as keywords I have inserted a manual delimiter for them, 
+% Since annotations aren't tagged as keywords I have inserted a manual delimiter for them,
 % it works as follows: \@@AnnotationText@@/
 \lstdefinestyle{Python}{
     language = Python,
@@ -61,7 +58,7 @@
     moredelim = [is][\textcolor{AnnotationGreen}]{\\@}{@@\/},   % Annotations
     numberstyle = \scriptsize\ttfamily\textcolor{gray},
     numbers = left,
-    frame = single, 
+    frame = single,
     frameround = tttt,
     framexleftmargin = 20pt,
     framexrightmargin = 20pt
@@ -84,10 +81,6 @@
     \hypersetup{hidelinks}
     \tableofcontents
 }
-
-% LIST OF TODOS (REMOVE IN FINAL) %
-\listoftodos
-% LIST OF TODOS (REMOVE IN FINAL) %
 
 % INTRODUCTION
 \input{chapters/1.introduction}

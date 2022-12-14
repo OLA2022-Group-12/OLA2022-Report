@@ -1,2 +1,168 @@
 \chapter{Optimization with uncertain \texorpdfstring{$\alpha$}{alpha} functions}
 \label{chap:unc_alpha}
+
+\section{Contextual hypotesis}
+\label{sec:unc_a_hyp}
+
+We now assume that the binary features of the users cannot be observed and therefore data is considered as aggregated.
+
+Since the features of the users are \textbf{not observable}, the $\alpha$ functions' shape for each class is unknown.
+
+As a result, in our scenario the learner receives all the interactions minus the parameters of the $\alpha$ functions.
+
+\section{Algorithm}
+\label{sec:unc_a_alg}
+
+By gathering the aggregated reward for each product we are able to utilize those coarse rewards to generate feedbacks for our MABs and therefore train them on the aggregated interactions for each day.
+
+In particular, we exploit Gaussian Processes in conjunction with MAB algorithms such as Thompson Sampling and UCB1 to exploit the continuity between the different arms.
+We instantiate a GP-MAB for each subcampaign and each MAB will have \texttt{n\_budget\_steps} number of arms.
+
+\subsection{Gaussian Processes}
+
+Gaussian Processes (GPs) are a powerful tool to tackle regression problems: by defining a kernel with its parameters and feeding the GP with the arms pulled by the bandit and their rewards it's possible to obtain a probability distribution over the outcome in form of arrays of \textbf{means} and \textbf{sigmas}.
+Different bandit algorithms use those values in different ways.
+
+Each GP has been instantiated with the kernel: $Ck(\theta) * RBF(\ell)$ where $Ck$ is the $\theta$-constant kernel and $RBF$ is the \textit{Radial Basis Function} kernel of length $\ell$, defined as:
+
+\begin{displaymath}
+exp \left( - \frac{ \lVert x - x' \rVert^2 }{ 2\ell^2} \right)
+\end{displaymath}
+
+The regret bound for algorithms that utilize gaussian processes in an advertising environment is identified as follows:
+
+\begin{displaymath}
+	R_T \le \sqrt{ \frac{2\Lambda^2}{log(1+\frac{1}{\sigma^2})} CBT \sum_{k=1}^C \gamma_{k, T} } \text{ with probability of } 1 - \delta
+\end{displaymath}
+where:
+\begin{displaymath}
+	B = 8log\left( 2\frac{T^2MC}{\delta} \right)
+\end{displaymath}
+
+\begin{itemize}
+	\setlength\itemsep{-0.3em}
+	\item C=5 is \textit{number of subcampaigns}
+	\item M=20 is the \textit{number of arms}
+	\item $\delta$=5 is the \textit{confidence} of the regret bound
+	\item $\sigma$=5 is the \textit{maximum variance} of the GP
+	\item $\gamma_{k, T}$ is the \textit{information gain} at time T for subcampaign k
+	\item $\Lambda$ is the \textit{Lipschitz constant} of the problem
+\end{itemize}
+
+\subsection{Algorithms outline}
+
+The main two MAB algorithms that we are going to use present some minor variations when used in conjunction with Gaussian Processes; we can consider the GPTS algorithm as a baseline for the GPUCB1 since it directly uses the GPs' features to gather samples, while in the GPUCB1 we need to build a confidence bound before.
+
+GPTS is a variant of TS implemented using Gaussian Processes that is implemented as follows:
+
+\begin{itemize}
+	\item For each day $t$, we gather a sample from each arm $a$:
+		\begin{displaymath}
+			\tilde{\theta_a} \leftarrow \text{ Sample} \left( \mathbb{P}(\mu_a = \theta_a) \right)
+		\end{displaymath}
+	\item Play arm $a_t$ defined as:
+		\begin{displaymath}
+			a_t \leftarrow arg\max_{a \in A} \left\{ \tilde{\theta_a} \right\}
+		\end{displaymath}
+	\item Update the Gaussian Process with the reward obtained.
+\end{itemize}
+
+Code snippets for updating the model and returning an estimation:
+
+\begin{lstlisting}[style=Python]
+def _update_model(self):
+	x = np.atleast_2d(self.pulled_arms).T
+	y = np.array(self.collected_rewards) / self.normalize_factor
+	self.gp.fit(x, y)
+	self.means, self.sigmas = self.gp.predict(
+		np.atleast_2d(self.arms).T, return_std=True
+	)
+	self.sigmas = np.maximum(self.sigmas, 1e-2)
+\end{lstlisting}
+
+\begin{lstlisting}[style=Python]
+def estimation(self):
+	return self.rng.normal(
+		self.means * self.normalize_factor, self.sigmas * self.normalize_factor
+	)
+\end{lstlisting}
+
+GPUCB1 is a variant of UCB1 that takes advantage of the Gaussian Processes confidence interval and models it as the confidence bound; apart from the arm choice, the learning process is equal to GPTS. The arm choice is implemented as:
+
+\begin{displaymath}
+	a_t \leftarrow arg\max_{a \in A} \left\{ \mu_{t-1} + \delta \sigma_{t-1} \right\}
+\end{displaymath}
+
+Code snippet that calculates the upper bound:
+
+\begin{lstlisting}[style=Python]
+def estimation(self):
+	upper_bounds = (self.means + self.confidence * 1.96 * self.sigmas)
+			* self.normalize_factor
+	return upper_bounds
+\end{lstlisting}
+
+\section{Results}
+\label{sec:unc_a_res}
+
+\vspace*{2em} % Aesthetic
+
+\subsection{Single run reward and regret}
+
+\vspace*{1em} % Aesthetic
+
+Thompson Sampling and UCB
+
+\begin{center}
+	\includegraphics[scale=0.5]{img/Graphs/uncertain_alpha/image1.png}
+	\includegraphics[scale=0.5]{img/Graphs/uncertain_alpha/image2.png}
+\end{center}
+
+\clearpage % Aesthetic
+
+Regret comparison
+
+\begin{center}
+	\includegraphics[scale=0.5]{img/Graphs/uncertain_alpha/image3.png}
+\end{center}
+
+\subsection{Average regret and reward}
+
+\vspace*{1em} % Aesthetic
+
+Thompson Sampling and UCB
+
+\begin{center}
+	\includegraphics[scale=0.5]{img/Graphs/uncertain_alpha/image4.png}
+	\includegraphics[scale=0.5]{img/Graphs/uncertain_alpha/image5.png}
+\end{center}
+
+\clearpage % Aesthetic
+
+Average regret comparison
+
+\begin{center}
+	\includegraphics[scale=0.5]{img/Graphs/uncertain_alpha/image6.png}
+\end{center}
+
+\subsection{Conclusions}
+
+Overall we can observe more instability but a faster convergence in the TS algorithm w.r.t to the UCB approach.
+However, both algorithms are able to converge to the optimal solution at different rates while respecting a linear cumulative regret bound.
+
+Average results over 15 runs at time horizon $T = 50$:
+
+\begin{table}[h]
+	\center
+	\begin{tabular}{|c|cc|c|}
+	\hline \hline
+		\cellcolor{blue!25} & Reward 	& Regret	& Deviation \\
+	\cline{2-4}
+		\cellcolor{blue!25} & $\mu$		& $\mu$		& $\sigma$	\\
+	\hline \hline
+		GPTS 				& 11610.53 	& 31024.67	& 440.36 	\\
+	\hline
+		GPUCB				& 11737.73	& 43686.67	& 349.47	\\
+	\hline \hline
+	\end{tabular}
+\end{table}
